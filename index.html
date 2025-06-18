@@ -78,6 +78,61 @@
             font-family: 'Courier New', Courier, monospace;
             word-wrap: break-word;
         }
+        
+        /* UPDATED: Modern Calculator Styles */
+        .calc-btn {
+            background: rgba(41, 56, 78, 0.7); /* Darker, glassy blue */
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            font-size: 1.25rem;
+            padding: 1rem 0; /* Adjusted padding */
+            border-radius: 0.75rem; /* rounded-xl */
+            transition: all 0.2s ease-in-out;
+            color: #e0e0e0;
+            backdrop-filter: blur(5px);
+        }
+
+        .calc-btn:hover {
+            background: rgba(56, 77, 105, 0.9);
+            border-color: rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.08);
+        }
+
+        .calc-btn:active, .calc-btn.keyboard-active {
+            transform: translateY(0);
+            background: rgba(70, 95, 130, 0.9);
+        }
+
+        .calc-operator {
+            background: rgba(0, 108, 153, 0.6); /* Themed operator color */
+            color: #99f6e4; /* Aqua text */
+            font-weight: 500;
+        }
+
+        .calc-special {
+            background: rgba(75, 85, 99, 0.6); /* Dark gray for C and DEL */
+            color: #fca5a5; /* Light red text */
+        }
+
+        .calc-equals {
+            background: linear-gradient(120deg, #00c6ff, #0072ff); /* Themed equals button */
+            color: white;
+            font-weight: 600;
+        }
+
+        #calculator-display {
+            background: rgba(10, 14, 26, 0.8);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        #calculator-history li {
+            transition: background-color 0.2s ease;
+        }
+
+        #calculator-history li:hover {
+            background-color: rgba(0, 255, 255, 0.05) !important;
+        }
+
     </style>
 </head>
 <body class="min-h-screen w-full p-4 sm:p-8 flex flex-col items-center">
@@ -106,11 +161,11 @@
         <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500" data-translate-key="main_title">
             Digital Toolkit Pro
         </h1>
-        <p class="text-lg text-gray-400 mt-2" data-translate-key="subtitle">Herramientas inteligentes para un mundo moderno</p>
+        <p class="text-lg text-gray-400 mt-2" data-translate-key="subtitle">Herramientas online útiles</p>
     </header>
 
     <!-- Main Grid for Tools -->
-    <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         <!-- Number/Text Converter Card -->
         <div class="card rounded-2xl p-6 md:p-8 space-y-8">
@@ -173,6 +228,46 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Modern Calculator -->
+        <div class="card lg:col-span-2 rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="modern_calculator_title">Calculadora</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Calculator -->
+                <div class="md:col-span-2">
+                    <div id="calculator-display" class="text-right text-4xl p-4 rounded-t-lg font-mono break-all">0</div>
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <button class="calc-btn calc-special" data-key="clear">C</button>
+                        <button class="calc-btn calc-special" data-key="backspace">DEL</button>
+                        <button class="calc-btn calc-operator" data-key="%">%</button>
+                        <button class="calc-btn calc-operator" data-key="/">÷</button>
+                        <button class="calc-btn" data-key="7">7</button>
+                        <button class="calc-btn" data-key="8">8</button>
+                        <button class="calc-btn" data-key="9">9</button>
+                        <button class="calc-btn calc-operator" data-key="*">×</button>
+                        <button class="calc-btn" data-key="4">4</button>
+                        <button class="calc-btn" data-key="5">5</button>
+                        <button class="calc-btn" data-key="6">6</button>
+                        <button class="calc-btn calc-operator" data-key="-">-</button>
+                        <button class="calc-btn" data-key="1">1</button>
+                        <button class="calc-btn" data-key="2">2</button>
+                        <button class="calc-btn" data-key="3">3</button>
+                        <button class="calc-btn calc-operator" data-key="+">+</button>
+                        <button class="calc-btn col-span-2" data-key="0">0</button>
+                        <button class="calc-btn" data-key=".">.</button>
+                        <button class="calc-btn calc-equals" data-key="=">=</button>
+                    </div>
+                </div>
+                <!-- History -->
+                <div class="md:col-span-1">
+                     <h3 class="text-lg font-semibold mb-2" data-translate-key="history_title">Historial</h3>
+                     <div id="calculator-history" class="result-box h-48 p-2 rounded-lg space-y-1 overflow-y-auto">
+                        <!-- History items will be injected here -->
+                     </div>
+                     <button id="clear-history-btn" class="btn-secondary w-full mt-2 py-2 rounded-lg text-sm" data-translate-key="clear_history_btn">Limpiar Historial</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Discount Calculator Card -->
         <div class="card rounded-2xl p-6 md:p-8">
@@ -221,37 +316,29 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <!-- Footer -->
     <footer class="mt-12 text-center text-gray-500 text-sm">
-        <p data-translate-key="footer_text">&copy; 2024 Digital Toolkit Pro. Diseñado para la máxima eficiencia.</p>
+        <p data-translate-key="footer_text">&copy; 2025 Digital Toolkit Pro</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // **FIX**: Declare all DOM element constants at the top of the scope.
-            // Header Elements
+            // Declare all DOM element constants at the top of the scope.
             const userFlag = document.getElementById('user-flag');
             const currentDateEl = document.getElementById('current-date');
             const currentTimeEl = document.getElementById('current-time');
             const languageSelector = document.getElementById('language-selector');
-
-            // Number to Text Converter Elements
             const numToTextInput = document.getElementById('numToTextInput');
             const toUpperBtn = document.getElementById('toUpperBtn');
             const toLowerBtn = document.getElementById('toLowerBtn');
             const numToTextResult = document.getElementById('numToTextResult');
             const copyNumToTextBtn = document.getElementById('copyNumToTextBtn');
-            
-            // Text to Number Converter Elements
             const textToNumInput = document.getElementById('textToNumInput');
             const textToNumBtn = document.getElementById('textToNumBtn');
             const textToNumResult = document.getElementById('textToNumResult');
-            
-            // VAT Calculator Elements
             const countryVatSelect = document.getElementById('countryVat');
             const customVatContainer = document.getElementById('customVatContainer');
             const customVatInput = document.getElementById('customVatInput');
@@ -261,26 +348,26 @@
             const resultNet = document.getElementById('resultNet');
             const resultVat = document.getElementById('resultVat');
             const resultTotal = document.getElementById('resultTotal');
-
-            // Discount Calculator Elements
             const originalPriceInput = document.getElementById('originalPriceInput');
             const discountPercentageInput = document.getElementById('discountPercentageInput');
             const calculateDiscountBtn = document.getElementById('calculateDiscountBtn');
             const savedAmount = document.getElementById('savedAmount');
             const finalPrice = document.getElementById('finalPrice');
-            
-            // Unit Converter Elements
             const unitCategory = document.getElementById('unitCategory');
             const fromUnit = document.getElementById('fromUnit');
             const toUnit = document.getElementById('toUnit');
             const fromValue = document.getElementById('fromValue');
             const toValue = document.getElementById('toValue');
-            
+            const calculatorDisplay = document.getElementById('calculator-display');
+            const calculatorButtons = document.querySelectorAll('.calc-btn');
+            const calculatorHistory = document.getElementById('calculator-history');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+
             // --- INTERNATIONALIZATION (I18N) LOGIC ---
             const translations = {
                 es: {
                     main_title: "Digital Toolkit Pro",
-                    subtitle: "Herramientas inteligentes para un mundo moderno",
+                    subtitle: "Herramientas online útiles",
                     num_to_text_title: "Conversor de Número a Texto",
                     num_to_text_placeholder: "Ingresa un número (hasta 12 dígitos)...",
                     uppercase_btn: "MAYÚSCULA",
@@ -315,15 +402,18 @@
                     to_label: "Hasta",
                     value_placeholder: "Valor...",
                     result_placeholder: "Resultado...",
-                    footer_text: "© 2024 Digital Toolkit Pro. Diseñado para la máxima eficiencia.",
+                    footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Longitud", masa: "Masa", temperatura: "Temperatura" },
                     vat_countries: {
                         "0.19_cl": "Chile (19%)", "0.21_es": "España (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Perú (18%)", "custom": "Otro (ingresar manualmente)..."
                     },
+                    modern_calculator_title: "Calculadora",
+                    history_title: "Historial",
+                    clear_history_btn: "Limpiar Historial",
                 },
                 en: {
                     main_title: "Digital Toolkit Pro",
-                    subtitle: "Intelligent tools for a modern world",
+                    subtitle: "Useful online tools",
                     num_to_text_title: "Number to Text Converter",
                     num_to_text_placeholder: "Enter a number (up to 12 digits)...",
                     uppercase_btn: "UPPERCASE",
@@ -358,15 +448,18 @@
                     to_label: "To",
                     value_placeholder: "Value...",
                     result_placeholder: "Result...",
-                    footer_text: "© 2024 Digital Toolkit Pro. Designed for maximum efficiency.",
+                    footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Length", masa: "Mass", temperatura: "Temperature" },
                      vat_countries: {
                         "0.19_cl": "Chile (19%)", "0.21_es": "Spain (21%)", "0.16_mx": "Mexico (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Peru (18%)", "custom": "Other (enter manually)..."
                     },
+                    modern_calculator_title: "Calculator",
+                    history_title: "History",
+                    clear_history_btn: "Clear History",
                 },
                 pt: {
-                    main_title: "Kit de Ferramentas Digitais Pro",
-                    subtitle: "Ferramentas inteligentes para um mundo moderno",
+                    main_title: "Digital Toolkit Pro",
+                    subtitle: "Ferramentas online úteis",
                     num_to_text_title: "Conversor de Número para Texto",
                     num_to_text_placeholder: "Digite um número (até 12 dígitos)...",
                     uppercase_btn: "MAIÚSCULA",
@@ -401,15 +494,23 @@
                     to_label: "Para",
                     value_placeholder: "Valor...",
                     result_placeholder: "Resultado...",
-                    footer_text: "© 2024 Kit de Ferramentas Digitais Pro. Projetado para máxima eficiência.",
+                    footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Comprimento", masa: "Massa", temperatura: "Temperatura" },
                     vat_countries: {
-                        "0.19_cl": "Chile (19%)", "0.21_es": "Espanha (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colômbia (19%)", "0.12_ec": "Equador (12%)", "0.18_pe": "Peru (18%)", "custom": "Outro (inserir manualmente)..."
+                        "0.19_cl": "Chile (19%)", "0.21_es": "Espanha (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colômbia (19%)", "0.12_ec": "Equador (12%)", "0.18_pe": "Peru (18%)", "custom": "Outro (inserir manually)..."
                     },
+                    modern_calculator_title: "Calculadora",
+                    history_title: "Histórico",
+                    clear_history_btn: "Limpar Histórico",
                 }
             };
             
             let currentLang = 'es';
+            const countryToLang = {
+                'ES': 'es', 'MX': 'es', 'CO': 'es', 'AR': 'es', 'PE': 'es', 'VE': 'es', 'CL': 'es', 'EC': 'es', 'GT': 'es', 'CU': 'es', 'BO': 'es', 'HN': 'es', 'PY': 'es', 'SV': 'es', 'NI': 'es', 'CR': 'es', 'PA': 'es', 'UY': 'es', 'GQ': 'es',
+                'BR': 'pt', 'PT': 'pt',
+                'US': 'en', 'GB': 'en', 'CA': 'en', 'AU': 'en', 'NZ': 'en'
+            };
 
             // --- FUNCTION DEFINITIONS ---
             
@@ -456,7 +557,7 @@
                 }
             }
 
-            const formatCurrency = (num) => isNaN(num) ? '-' : num.toLocaleString(currentLang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const formatCurrency = (num, lang) => isNaN(num) ? '-' : num.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             const formatDate = (date) => date.toLocaleDateString(currentLang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const formatTime = (date) => date.toLocaleTimeString(currentLang);
 
@@ -466,7 +567,7 @@
                 currentTimeEl.textContent = formatTime(now);
             }
             
-            async function getGeoInfo() {
+            async function initializeApp() {
                 try {
                     const response = await fetch('https://get.geojs.io/v1/ip/country.json');
                     if (!response.ok) throw new Error('Network response was not ok.');
@@ -475,64 +576,146 @@
                     if (countryCode) {
                         userFlag.src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
                         userFlag.classList.remove('hidden');
-
-                        // Automatic Language Setting
-                        const countryToLang = {
-                            'ES': 'es', 'MX': 'es', 'CO': 'es', 'AR': 'es', 'PE': 'es', 'VE': 'es', 'CL': 'es', 'EC': 'es', 'GT': 'es', 'CU': 'es', 'BO': 'es', 'HN': 'es', 'PY': 'es', 'SV': 'es', 'NI': 'es', 'CR': 'es', 'PA': 'es', 'UY': 'es', 'GQ': 'es',
-                            'BR': 'pt', 'PT': 'pt',
-                            'US': 'en', 'GB': 'en', 'CA': 'en', 'AU': 'en', 'NZ': 'en'
-                        };
                         const detectedLang = countryToLang[countryCode];
                         const browserLang = navigator.language.split('-')[0];
                         const finalLang = translations[detectedLang] ? detectedLang : (translations[browserLang] ? browserLang : 'es');
                         setLanguage(finalLang);
                     } else {
-                        // Fallback if country code is not detected
-                        const browserLang = navigator.language.split('-')[0];
-                        setLanguage(translations[browserLang] ? browserLang : 'es');
+                        throw new Error("Country code not detected");
                     }
                 } catch (error) {
                     console.error("No se pudo obtener la información de geolocalización:", error);
                     userFlag.classList.add('hidden');
-                    // Fallback on API error
                     const browserLang = navigator.language.split('-')[0];
                     setLanguage(translations[browserLang] ? browserLang : 'es');
                 }
+                updateClock();
+                setInterval(updateClock, 1000);
             }
 
-            function numeroALetras(numStr) { numStr=String(numStr).replace(/[^0-9]/g,'');if(!numStr)return 'Por favor, ingresa un número.';if(numStr.length>12){return "Número demasiado grande (máx. 999,999,999,999).";}let num=parseInt(numStr,10);if(isNaN(num))return 'Entrada no válida.';if(num===0)return 'cero';function Centenas(num){let centenas=Math.floor(num/100);let decenas=num%100;let texto='';switch(centenas){case 1:texto=(decenas>0)?'ciento '+Decenas(decenas):'cien';break;case 2:texto='doscientos '+Decenas(decenas);break;case 3:texto='trescientos '+Decenas(decenas);break;case 4:texto='cuatrocientos '+Decenas(decenas);break;case 5:texto='quinientos '+Decenas(decenas);break;case 6:texto='seiscientos '+Decenas(decenas);break;case 7:texto='setecientos '+Decenas(decenas);break;case 8:texto='ochocientos '+Decenas(decenas);break;case 9:texto='novecientos '+Decenas(decenas);break;default:texto=Decenas(decenas);}return texto.trim();}function Decenas(num){let decena=Math.floor(num/10);let unidad=num%10;switch(decena){case 1:switch(unidad){case 0:return 'diez';case 1:return 'once';case 2:return 'doce';case 3:return 'trece';case 4:return 'catorce';case 5:return 'quince';default:return 'dieci'+Unidades(unidad);}case 2:return unidad===0?'veinte':'veinti'+Unidades(unidad);case 3:return DecenasY('treinta',unidad);case 4:return DecenasY('cuarenta',unidad);case 5:return DecenasY('cincuenta',unidad);case 6:return DecenasY('sesenta',unidad);case 7:return DecenasY('setenta',unidad);case 8:return DecenasY('ochenta',unidad);case 9:return DecenasY('noventa',unidad);case 0:return Unidades(unidad);}}function DecenasY(strSin,numUnidades){if(numUnidades>0)return strSin+' y '+Unidades(numUnidades);return strSin;}function Unidades(num){switch(num){case 1:return 'un';case 2:return 'dos';case 3:return 'tres';case 4:return 'cuatro';case 5:return 'cinco';case 6:return 'seis';case 7:return 'siete';case 8:return 'ocho';case 9:return 'nueve';}return '';}function Miles(num){let miles=Math.floor(num/1000);let resto=num%1000;let strMiles='';if(miles>0){strMiles=(miles===1)?'mil':Centenas(miles)+' mil';}let strResto=Centenas(resto);return(strMiles+' '+strResto).trim();}function Millones(num){let millones=Math.floor(num/1000000);let resto=num%1000000;let strMillones='';if(millones>0){if(millones===1){strMillones='un millón';}else{let texto=Centenas(millones);if(texto.endsWith('un'))texto=texto.slice(0,-2)+'uno';strMillones=texto+' millones';}}let strResto=Miles(resto);return(strMillones+' '+strResto).trim();}function MilesDeMillones(num){let milesDeMillones=Math.floor(num/1000000000);let resto=num%1000000000;let strMilesMillones='';if(milesDeMillones>0){strMilesMillones=(milesDeMillones===1)?'mil millones':Centenas(milesDeMillones)+' mil millones';}let strResto=Millones(resto);return(strMilesMillones+' '+strResto).trim();}let letras;if(num>=1000000000){letras=MilesDeMillones(num);}else if(num>=1000000){letras=Millones(num);}else if(num>=1000){letras=Miles(num);}else{letras=Centenas(num);}if(letras==='un')return 'uno';if(letras.endsWith('un')){const base=letras.slice(0,-2);if(base==='veinti')return 'veintiuno';}return letras.trim().replace(/\s+/g,' ');}
+            function numeroALetras(numStr) { /* Unchanged */ numStr=String(numStr).replace(/[^0-9]/g,'');if(!numStr)return 'Por favor, ingresa un número.';if(numStr.length>12){return "Número demasiado grande (máx. 999,999,999,999).";}let num=parseInt(numStr,10);if(isNaN(num))return 'Entrada no válida.';if(num===0)return 'cero';function Centenas(num){let centenas=Math.floor(num/100);let decenas=num%100;let texto='';switch(centenas){case 1:texto=(decenas>0)?'ciento '+Decenas(decenas):'cien';break;case 2:texto='doscientos '+Decenas(decenas);break;case 3:texto='trescientos '+Decenas(decenas);break;case 4:texto='cuatrocientos '+Decenas(decenas);break;case 5:texto='quinientos '+Decenas(decenas);break;case 6:texto='seiscientos '+Decenas(decenas);break;case 7:texto='setecientos '+Decenas(decenas);break;case 8:texto='ochocientos '+Decenas(decenas);break;case 9:texto='novecientos '+Decenas(decenas);break;default:texto=Decenas(decenas);}return texto.trim();}function Decenas(num){let decena=Math.floor(num/10);let unidad=num%10;switch(decena){case 1:switch(unidad){case 0:return 'diez';case 1:return 'once';case 2:return 'doce';case 3:return 'trece';case 4:return 'catorce';case 5:return 'quince';default:return 'dieci'+Unidades(unidad);}case 2:return unidad===0?'veinte':'veinti'+Unidades(unidad);case 3:return DecenasY('treinta',unidad);case 4:return DecenasY('cuarenta',unidad);case 5:return DecenasY('cincuenta',unidad);case 6:return DecenasY('sesenta',unidad);case 7:return DecenasY('setenta',unidad);case 8:return DecenasY('ochenta',unidad);case 9:return DecenasY('noventa',unidad);case 0:return Unidades(unidad);}}function DecenasY(strSin,numUnidades){if(numUnidades>0)return strSin+' y '+Unidades(numUnidades);return strSin;}function Unidades(num){switch(num){case 1:return 'un';case 2:return 'dos';case 3:return 'tres';case 4:return 'cuatro';case 5:return 'cinco';case 6:return 'seis';case 7:return 'siete';case 8:return 'ocho';case 9:return 'nueve';}return '';}function Miles(num){let miles=Math.floor(num/1000);let resto=num%1000;let strMiles='';if(miles>0){strMiles=(miles===1)?'mil':Centenas(miles)+' mil';}let strResto=Centenas(resto);return(strMiles+' '+strResto).trim();}function Millones(num){let millones=Math.floor(num/1000000);let resto=num%1000000;let strMillones='';if(millones>0){if(millones===1){strMillones='un millón';}else{let texto=Centenas(millones);if(texto.endsWith('un'))texto=texto.slice(0,-2)+'uno';strMillones=texto+' millones';}}let strResto=Miles(resto);return(strMillones+' '+strResto).trim();}function MilesDeMillones(num){let milesDeMillones=Math.floor(num/1000000000);let resto=num%1000000000;let strMilesMillones='';if(milesDeMillones>0){strMilesMillones=(milesDeMillones===1)?'mil millones':Centenas(milesDeMillones)+' mil millones';}let strResto=Millones(resto);return(strMilesMillones+' '+strResto).trim();}let letras;if(num>=1000000000){letras=MilesDeMillones(num);}else if(num>=1000000){letras=Millones(num);}else if(num>=1000){letras=Miles(num);}else{letras=Centenas(num);}if(letras==='un')return 'uno';if(letras.endsWith('un')){const base=letras.slice(0,-2);if(base==='veinti')return 'veintiuno';}return letras.trim().replace(/\s+/g,' ');}
             const convertNumToText = (casing) => { const value = numToTextInput.value; const text = numeroALetras(value); numToTextResult.textContent = casing === 'upper' ? text.toUpperCase() : text.toLowerCase(); };
-            
-            function textoANumero(texto) { const wordMap={'cero':0,'uno':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciséis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintidos':22,'veintitres':23,'veinticuatro':24,'veinticinco':25,'veintiseis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};const scaleMap={'mil':1000,'millón':1000000,'millones':1000000};texto=texto.toLowerCase().replace(/ y /g,' ').replace(/ de /g,' ').trim();if(!texto)return 'Por favor, ingresa un texto.';const palabras=texto.split(/\s+/);let total=0;let grupoActual=0;for(let i=0;i<palabras.length;i++){const palabra=palabras[i];if(wordMap[palabra]!==undefined){grupoActual+=wordMap[palabra];}else if(scaleMap[palabra]!==undefined){const escala=scaleMap[palabra];if(grupoActual===0){grupoActual=1;}grupoActual*=escala;if(palabra==='mil'&&i+1<palabras.length&&(palabras[i+1]==='millón'||palabras[i+1]==='millones')){}else{total+=grupoActual;grupoActual=0;}}else{return `Palabra no reconocida: "${palabra}"`;}}total+=grupoActual;return total.toLocaleString(currentLang);}
-            
-            function getVatRate() { const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection); } }
-            
+            function textoANumero(texto) { /* Unchanged */ const wordMap={'cero':0,'uno':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciséis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintidos':22,'veintitres':23,'veinticuatro':24,'veinticinco':25,'veintiseis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};const scaleMap={'mil':1000,'millón':1000000,'millones':1000000};texto=texto.toLowerCase().replace(/ y /g,' ').replace(/ de /g,' ').trim();if(!texto)return 'Por favor, ingresa un texto.';const palabras=texto.split(/\s+/);let total=0;let grupoActual=0;for(let i=0;i<palabras.length;i++){const palabra=palabras[i];if(wordMap[palabra]!==undefined){grupoActual+=wordMap[palabra];}else if(scaleMap[palabra]!==undefined){const escala=scaleMap[palabra];if(grupoActual===0){grupoActual=1;}grupoActual*=escala;if(palabra==='mil'&&i+1<palabras.length&&(palabras[i+1]==='millón'||palabras[i+1]==='millones')){}else{total+=grupoActual;grupoActual=0;}}else{return `Palabra no reconocida: "${palabra}"`;}}total+=grupoActual;return total.toLocaleString(currentLang);}
+            function getVatRate() { /* Unchanged */ const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection); } }
             const units = {longitud: {'Metros (m)': 1,'Kilómetros (km)': 1000,'Centímetros (cm)': 0.01,'Milímetros (mm)': 0.001,'Millas (mi)': 1609.34,'Pies (ft)': 0.3048,'Pulgadas (in)': 0.0254,},masa: {'Gramos (g)': 1,'Kilogramos (kg)': 1000,'Libras (lb)': 453.592,'Onzas (oz)': 28.3495,'Toneladas (t)': 1000000,},temperatura: {'Celsius (°C)': 'celsius','Fahrenheit (°F)': 'fahrenheit','Kelvin (K)': 'kelvin',}};
-            
-            function populateUnits() {const category = unitCategory.value;const unitOptions = Object.keys(units[category]);fromUnit.innerHTML = '';toUnit.innerHTML = '';unitOptions.forEach(unit => {const option1 = document.createElement('option');option1.value = unit;option1.textContent = unit;fromUnit.appendChild(option1);const option2 = document.createElement('option');option2.value = unit;option2.textContent = unit;toUnit.appendChild(option2);});fromUnit.selectedIndex = 0;toUnit.selectedIndex = 1;convertUnits();}
-            
-            function convertUnits() {const category = unitCategory.value;const val = parseFloat(fromValue.value);const fromU = fromUnit.value;const toU = toUnit.value;if (isNaN(val) || !fromU || !toU) {toValue.value = '';return;}let result;if (category === 'temperatura') {const fromType = units.temperatura[fromU];const toType = units.temperatura[toU];if (fromType === 'celsius') {if (toType === 'fahrenheit') result = (val * 9/5) + 32;else if (toType === 'kelvin') result = val + 273.15;else result = val;} else if (fromType === 'fahrenheit') {if (toType === 'celsius') result = (val - 32) * 5/9;else if (toType === 'kelvin') result = (val - 32) * 5/9 + 273.15;else result = val;} else if (fromType === 'kelvin') {if (toType === 'celsius') result = val - 273.15;else if (toType === 'fahrenheit') result = (val - 273.15) * 9/5 + 32;else result = val;}} else {const fromFactor = units[category][fromU];const toFactor = units[category][toU];const baseValue = val * fromFactor;result = baseValue / toFactor;}toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);}
-            
+            function populateUnits() { /* Unchanged */ const category = unitCategory.value;const unitOptions = Object.keys(units[category]);fromUnit.innerHTML = '';toUnit.innerHTML = '';unitOptions.forEach(unit => {const option1 = document.createElement('option');option1.value = unit;option1.textContent = unit;fromUnit.appendChild(option1);const option2 = document.createElement('option');option2.value = unit;option2.textContent = unit;toUnit.appendChild(option2);});fromUnit.selectedIndex = 0;toUnit.selectedIndex = 1;convertUnits();}
+            function convertUnits() { /* Unchanged */ const category = unitCategory.value;const val = parseFloat(fromValue.value);const fromU = fromUnit.value;const toU = toUnit.value;if (isNaN(val) || !fromU || !toU) {toValue.value = '';return;}let result;if (category === 'temperatura') {const fromType = units.temperatura[fromU];const toType = units.temperatura[toU];if (fromType === 'celsius') {if (toType === 'fahrenheit') result = (val * 9/5) + 32;else if (toType === 'kelvin') result = val + 273.15;else result = val;} else if (fromType === 'fahrenheit') {if (toType === 'celsius') result = (val - 32) * 5/9;else if (toType === 'kelvin') result = (val - 32) * 5/9 + 273.15;else result = val;} else if (fromType === 'kelvin') {if (toType === 'celsius') result = val - 273.15;else if (toType === 'fahrenheit') result = (val - 273.15) * 9/5 + 32;else result = val;}} else {const fromFactor = units[category][fromU];const toFactor = units[category][toU];const baseValue = val * fromFactor;result = baseValue / toFactor;}toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);}
+
+            // --- MODERN CALCULATOR LOGIC ---
+            let currentInput = '0';
+            let history = [];
+
+            function handleCalcInput(key) {
+                const lastChar = currentInput.slice(-1);
+
+                if (key === 'clear' || key === 'Escape') {
+                    currentInput = '0';
+                } else if (key === 'backspace' || key === 'Backspace') {
+                    currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0';
+                } else if (key === '=' || key === 'Enter') {
+                    try {
+                        const expression = currentInput.replace(/×/g, '*').replace(/÷/g, '/');
+                        if (/[^0-9+\-*/.%() ]/.test(expression)) {
+                            throw new Error("Invalid characters");
+                        }
+                        const rawResult = new Function('return ' + expression)();
+                        const result = parseFloat(rawResult.toFixed(10));
+                        history.push({ expression: currentInput, result: result.toLocaleString(currentLang), rawResult: result });
+                        if (history.length > 10) history.shift();
+                        updateHistory();
+                        currentInput = String(result);
+                    } catch (error) {
+                        currentInput = 'Error';
+                    }
+                } else if (['+', '-', '×', '÷', '*', '/'].includes(key)) {
+                    let operator = key;
+                    if (key === '*') operator = '×';
+                    if (key === '/') operator = '÷';
+                    
+                    if (!['+', '-', '×', '÷'].includes(lastChar)) {
+                        currentInput += operator;
+                    }
+                } else if (key === '%') {
+                    if (!isNaN(parseFloat(lastChar))){
+                         currentInput = String(parseFloat(currentInput) / 100);
+                    }
+                } else if (!isNaN(key) || key === '.') {
+                    if (key === '.' && currentInput.split(/[\+\-×÷]/).pop().includes('.')) return;
+                    if (currentInput === '0' || currentInput === 'Error') {
+                        currentInput = key;
+                    } else {
+                        currentInput += key;
+                    }
+                }
+                updateDisplay();
+            }
+
+            function updateDisplay() {
+                calculatorDisplay.textContent = currentInput;
+            }
+
+            function updateHistory() {
+                calculatorHistory.innerHTML = '';
+                history.slice().reverse().forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'p-1 rounded-md hover:bg-gray-700 cursor-pointer text-right text-sm';
+                    li.innerHTML = `<span class="text-gray-400">${item.expression} =</span><br>${item.result}`;
+                    li.addEventListener('click', () => {
+                        currentInput = String(item.rawResult);
+                        updateDisplay();
+                    });
+                    calculatorHistory.appendChild(li);
+                });
+            }
+
             // --- EVENT LISTENERS ---
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            
             toUpperBtn.addEventListener('click', () => convertNumToText('upper'));
             toLowerBtn.addEventListener('click', () => convertNumToText('lower'));
             copyNumToTextBtn.addEventListener('click', () => {const textToCopy = numToTextResult.textContent;if (!textToCopy) return;const textArea = document.createElement('textarea');textArea.value = textToCopy;document.body.appendChild(textArea);textArea.select();try {document.execCommand('copy');const originalIcon = copyNumToTextBtn.innerHTML;copyNumToTextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;setTimeout(() => {copyNumToTextBtn.innerHTML = originalIcon;}, 1500);} catch (err) {console.error('Error al copiar el texto: ', err);}document.body.removeChild(textArea);});
             textToNumBtn.addEventListener('click', () => { const text = textToNumInput.value; const result = textoANumero(text); textToNumResult.textContent = result; });
             countryVatSelect.addEventListener('change', () => { if (countryVatSelect.value === 'custom') { customVatContainer.classList.remove('hidden'); } else { customVatContainer.classList.add('hidden'); } });
-            calculateFromNetBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const net = amount;const vat = net * vatRate;const total = net + vat;resultNet.textContent = formatCurrency(net);resultVat.textContent = formatCurrency(vat);resultTotal.textContent = formatCurrency(total);});
-            calculateFromTotalBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const total = amount;const net = total / (1 + vatRate);const vat = total - net;resultNet.textContent = formatCurrency(net);resultVat.textContent = formatCurrency(vat);resultTotal.textContent = formatCurrency(total);});
-            calculateDiscountBtn.addEventListener('click', () => {const originalPrice = parseFloat(originalPriceInput.value);const discountPercentage = parseFloat(discountPercentageInput.value);if (isNaN(originalPrice) || isNaN(discountPercentage) || originalPrice < 0 || discountPercentage < 0) {savedAmount.textContent = '-';finalPrice.textContent = '-';return;}const amountToSave = originalPrice * (discountPercentage / 100);const priceWithDiscount = originalPrice - amountToSave;savedAmount.textContent = '$ ' + formatCurrency(amountToSave);finalPrice.textContent = '$ ' + formatCurrency(priceWithDiscount);});
+            calculateFromNetBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const net = amount;const vat = net * vatRate;const total = net + vat;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
+            calculateFromTotalBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const total = amount;const net = total / (1 + vatRate);const vat = total - net;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
+            calculateDiscountBtn.addEventListener('click', () => {const originalPrice = parseFloat(originalPriceInput.value);const discountPercentage = parseFloat(discountPercentageInput.value);if (isNaN(originalPrice) || isNaN(discountPercentage) || originalPrice < 0 || discountPercentage < 0) {savedAmount.textContent = '-';finalPrice.textContent = '-';return;}const amountToSave = originalPrice * (discountPercentage / 100);const priceWithDiscount = originalPrice - amountToSave;savedAmount.textContent = '$ ' + formatCurrency(amountToSave, currentLang);finalPrice.textContent = '$ ' + formatCurrency(priceWithDiscount, currentLang);});
             unitCategory.addEventListener('change', populateUnits);
             fromValue.addEventListener('input', convertUnits);
             fromUnit.addEventListener('change', convertUnits);
             toUnit.addEventListener('change', convertUnits);
+            calculatorButtons.forEach(button => button.addEventListener('click', () => handleCalcInput(button.dataset.key)));
+            clearHistoryBtn.addEventListener('click', () => { history = []; updateHistory(); });
+
+            document.addEventListener('keydown', (event) => {
+                // **FIX**: Check if the active element is an input/select field before hijacking keys.
+                const activeEl = document.activeElement;
+                if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT')) {
+                    return; // Don't interfere with typing in other input fields.
+                }
+
+                const key = event.key;
+                let buttonKey;
+
+                if (key >= '0' && key <= '9') buttonKey = key;
+                else if (key === '.' || key === ',') buttonKey = '.';
+                else if (['+', '-', '*', '/', '%'].includes(key)) buttonKey = key;
+                else if (key === 'Enter' || key === '=') buttonKey = '=';
+                else if (key === 'Backspace') buttonKey = 'backspace';
+                else if (key === 'Escape') buttonKey = 'clear';
+
+                if(buttonKey) {
+                    event.preventDefault();
+                    handleCalcInput(buttonKey);
+                    const button = document.querySelector(`.calc-btn[data-key="${buttonKey}"]`) || document.querySelector(`.calc-btn[data-key="${key === '*' ? '×' : key === '/' ? '÷' : ''}"]`);
+                    if(button) {
+                        button.classList.add('keyboard-active');
+                        setTimeout(() => button.classList.remove('keyboard-active'), 100);
+                    }
+                }
+            });
+
 
             // --- INITIALIZATION ---
-            updateClock();
-            setInterval(updateClock, 1000);
-            getGeoInfo();
+            initializeApp();
 
         });
     </script>
