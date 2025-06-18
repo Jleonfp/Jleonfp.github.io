@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas Web Futuristas</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter for a clean, modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles for the futuristic look -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0e1a; /* Deep dark blue background */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(5, 150, 255, 0.1), transparent 25%),
+                radial-gradient(circle at 85% 70%, rgba(100, 255, 218, 0.1), transparent 25%);
+            color: #e0e0e0;
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.6); /* Semi-transparent dark card */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .input-field {
+            background-color: #1f2937;
+            border: 1px solid #4b5563;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.2);
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 198, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: #374151;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: scale(1.05);
+        }
+        
+        .result-box {
+            background-color: #0c1222;
+            border: 1px dashed #4b5563;
+            min-height: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full p-4 sm:p-8 flex flex-col items-center">
+
+    <!-- Header -->
+    <header class="text-center mb-12 w-full max-w-6xl">
+        <div class="flex justify-between items-start">
+             <!-- User Info: Date, Time, Flag -->
+            <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4 text-gray-400">
+                <img id="user-flag" src="" alt="Bandera del país" class="w-8 h-auto rounded-md hidden" />
+                <div class="text-sm text-left">
+                    <span id="current-date" data-translate-key="current_date"></span>
+                    <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono bg-gray-800/50 px-2 py-1 rounded"></span>
+                </div>
+            </div>
+            <!-- Language Selector -->
+            <div class="relative">
+                <select id="language-selector" class="input-field appearance-none p-2 rounded-lg pr-8">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                    <option value="pt">Português</option>
+                </select>
+            </div>
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500" data-translate-key="main_title">
+            Digital Toolkit Pro
+        </h1>
+        <p class="text-lg text-gray-400 mt-2" data-translate-key="subtitle">Herramientas inteligentes para un mundo moderno</p>
+    </header>
+
+    <!-- Main Grid for Tools -->
+    <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Number/Text Converter Card -->
+        <div class="card rounded-2xl p-6 md:p-8 space-y-8">
+            <!-- Number to Text Section -->
+            <div>
+                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="num_to_text_title">Conversor de Número a Texto</h2>
+                <div class="space-y-4">
+                    <input type="number" id="numToTextInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="num_to_text_placeholder">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="toUpperBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="uppercase_btn">MAYÚSCULA</button>
+                        <button id="toLowerBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="lowercase_btn">minúscula</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div id="numToTextResult" class="result-box p-4 rounded-lg text-cyan-200 w-full"></div>
+                        <button id="copyNumToTextBtn" class="btn-secondary p-3 rounded-lg flex-shrink-0" data-translate-key-title="copy_result_title">
+                            <svg class="clipboard-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text to Number Section -->
+            <div>
+                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="text_to_num_title">Conversor de Texto a Número</h2>
+                <div class="space-y-4">
+                    <input type="text" id="textToNumInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="text_to_num_placeholder">
+                    <button id="textToNumBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="convert_to_num_btn">Convertir a Número</button>
+                    <div id="textToNumResult" class="result-box p-4 rounded-lg text-cyan-200"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VAT Calculator Card -->
+        <div class="card rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="vat_calculator_title">Calculadora de IVA</h2>
+            <div class="space-y-6">
+                <div>
+                    <label for="countryVat" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="country_vat_label">País (IVA %)</label>
+                    <select id="countryVat" class="input-field w-full p-3 rounded-lg"></select>
+                </div>
+                <div id="customVatContainer" class="hidden">
+                    <label for="customVatInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="custom_vat_label">Ingresar % de IVA personalizado</label>
+                    <input type="number" id="customVatInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="custom_vat_placeholder">
+                </div>
+                <div>
+                    <label for="amountInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label">Monto</label>
+                    <input type="number" id="amountInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="amount_placeholder">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button id="calculateFromNet" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_net_btn">Calcular desde Neto</button>
+                    <button id="calculateFromTotal" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_total_btn">Calcular desde Total</button>
+                </div>
+                <div class="space-y-4 pt-4 border-t border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title">Resultados:</h3>
+                    <div class="grid grid-cols-3 gap-2 text-center text-sm">
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="net_label">Neto</span><span id="resultNet" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="vat_label">IVA</span><span id="resultVat" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="total_label">Total</span><span id="resultTotal" class="font-mono text-lg text-cyan-300">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discount Calculator Card -->
+        <div class="card rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="discount_calculator_title">Calculadora de Descuentos</h2>
+            <div class="space-y-6">
+                <div>
+                    <label for="originalPriceInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="original_price_label">Precio Original</label>
+                    <input type="number" id="originalPriceInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="original_price_placeholder">
+                </div>
+                <div>
+                    <label for="discountPercentageInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="discount_percentage_label">Porcentaje de Descuento (%)</label>
+                    <input type="number" id="discountPercentageInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="discount_percentage_placeholder">
+                </div>
+                <button id="calculateDiscountBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calculate_discount_btn">Calcular Descuento</button>
+                <div class="space-y-4 pt-4 border-t border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title">Resultados:</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center text-sm">
+                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="saved_amount_label">Monto Ahorrado</span><span id="savedAmount" class="font-mono text-xl text-green-400">-</span></div>
+                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="final_price_label">Precio Final</span><span id="finalPrice" class="font-mono text-xl text-cyan-300">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit Converter Card -->
+        <div class="card rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="unit_converter_title">Conversor de Unidades</h2>
+            <div class="space-y-4">
+                 <div>
+                    <label for="unitCategory" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="measurement_type_label">Tipo de Medida</label>
+                    <select id="unitCategory" class="input-field w-full p-3 rounded-lg"></select>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-full">
+                        <label for="fromUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="from_label">Desde</label>
+                        <select id="fromUnit" class="input-field w-full p-3 rounded-lg"></select>
+                    </div>
+                    <div class="w-full">
+                         <label for="toUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="to_label">Hasta</label>
+                        <select id="toUnit" class="input-field w-full p-3 rounded-lg"></select>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <input type="number" id="fromValue" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="value_placeholder">
+                    <input type="text" id="toValue" class="input-field w-full p-3 rounded-lg" readonly data-translate-key-placeholder="result_placeholder">
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-gray-500 text-sm">
+        <p data-translate-key="footer_text">&copy; 2024 Digital Toolkit Pro. Diseñado para la máxima eficiencia.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // **FIX**: Declare all DOM element constants at the top of the scope.
+            // Header Elements
+            const userFlag = document.getElementById('user-flag');
+            const currentDateEl = document.getElementById('current-date');
+            const currentTimeEl = document.getElementById('current-time');
+            const languageSelector = document.getElementById('language-selector');
+
+            // Number to Text Converter Elements
+            const numToTextInput = document.getElementById('numToTextInput');
+            const toUpperBtn = document.getElementById('toUpperBtn');
+            const toLowerBtn = document.getElementById('toLowerBtn');
+            const numToTextResult = document.getElementById('numToTextResult');
+            const copyNumToTextBtn = document.getElementById('copyNumToTextBtn');
+            
+            // Text to Number Converter Elements
+            const textToNumInput = document.getElementById('textToNumInput');
+            const textToNumBtn = document.getElementById('textToNumBtn');
+            const textToNumResult = document.getElementById('textToNumResult');
+            
+            // VAT Calculator Elements
+            const countryVatSelect = document.getElementById('countryVat');
+            const customVatContainer = document.getElementById('customVatContainer');
+            const customVatInput = document.getElementById('customVatInput');
+            const amountInput = document.getElementById('amountInput');
+            const calculateFromNetBtn = document.getElementById('calculateFromNet');
+            const calculateFromTotalBtn = document.getElementById('calculateFromTotal');
+            const resultNet = document.getElementById('resultNet');
+            const resultVat = document.getElementById('resultVat');
+            const resultTotal = document.getElementById('resultTotal');
+
+            // Discount Calculator Elements
+            const originalPriceInput = document.getElementById('originalPriceInput');
+            const discountPercentageInput = document.getElementById('discountPercentageInput');
+            const calculateDiscountBtn = document.getElementById('calculateDiscountBtn');
+            const savedAmount = document.getElementById('savedAmount');
+            const finalPrice = document.getElementById('finalPrice');
+            
+            // Unit Converter Elements
+            const unitCategory = document.getElementById('unitCategory');
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            const fromValue = document.getElementById('fromValue');
+            const toValue = document.getElementById('toValue');
+            
+            // --- INTERNATIONALIZATION (I18N) LOGIC ---
+            const translations = {
+                es: {
+                    main_title: "Digital Toolkit Pro",
+                    subtitle: "Herramientas inteligentes para un mundo moderno",
+                    num_to_text_title: "Conversor de Número a Texto",
+                    num_to_text_placeholder: "Ingresa un número (hasta 12 dígitos)...",
+                    uppercase_btn: "MAYÚSCULA",
+                    lowercase_btn: "minúscula",
+                    copy_result_title: "Copiar resultado",
+                    text_to_num_title: "Conversor de Texto a Número",
+                    text_to_num_placeholder: "Ingresa un texto...",
+                    convert_to_num_btn: "Convertir a Número",
+                    vat_calculator_title: "Calculadora de IVA",
+                    country_vat_label: "País (IVA %)",
+                    custom_vat_label: "Ingresar % de IVA personalizado",
+                    custom_vat_placeholder: "Ej: 25",
+                    amount_label: "Monto",
+                    amount_placeholder: "Ingresa el monto a calcular...",
+                    calc_from_net_btn: "Calcular desde Neto",
+                    calc_from_total_btn: "Calcular desde Total",
+                    results_title: "Resultados:",
+                    net_label: "Neto",
+                    vat_label: "IVA",
+                    total_label: "Total",
+                    discount_calculator_title: "Calculadora de Descuentos",
+                    original_price_label: "Precio Original",
+                    original_price_placeholder: "Ej: 10000",
+                    discount_percentage_label: "Porcentaje de Descuento (%)",
+                    discount_percentage_placeholder: "Ej: 30",
+                    calculate_discount_btn: "Calcular Descuento",
+                    saved_amount_label: "Monto Ahorrado",
+                    final_price_label: "Precio Final",
+                    unit_converter_title: "Conversor de Unidades",
+                    measurement_type_label: "Tipo de Medida",
+                    from_label: "Desde",
+                    to_label: "Hasta",
+                    value_placeholder: "Valor...",
+                    result_placeholder: "Resultado...",
+                    footer_text: "© 2024 Digital Toolkit Pro. Diseñado para la máxima eficiencia.",
+                    measurement_types: { longitud: "Longitud", masa: "Masa", temperatura: "Temperatura" },
+                    vat_countries: {
+                        "0.19_cl": "Chile (19%)", "0.21_es": "España (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Perú (18%)", "custom": "Otro (ingresar manualmente)..."
+                    },
+                },
+                en: {
+                    main_title: "Digital Toolkit Pro",
+                    subtitle: "Intelligent tools for a modern world",
+                    num_to_text_title: "Number to Text Converter",
+                    num_to_text_placeholder: "Enter a number (up to 12 digits)...",
+                    uppercase_btn: "UPPERCASE",
+                    lowercase_btn: "lowercase",
+                    copy_result_title: "Copy result",
+                    text_to_num_title: "Text to Number Converter",
+                    text_to_num_placeholder: "Enter text...",
+                    convert_to_num_btn: "Convert to Number",
+                    vat_calculator_title: "VAT Calculator",
+                    country_vat_label: "Country (VAT %)",
+                    custom_vat_label: "Enter custom VAT %",
+                    custom_vat_placeholder: "Ex: 25",
+                    amount_label: "Amount",
+                    amount_placeholder: "Enter the amount to calculate...",
+                    calc_from_net_btn: "Calculate from Net",
+                    calc_from_total_btn: "Calculate from Total",
+                    results_title: "Results:",
+                    net_label: "Net",
+                    vat_label: "VAT",
+                    total_label: "Total",
+                    discount_calculator_title: "Discount Calculator",
+                    original_price_label: "Original Price",
+                    original_price_placeholder: "Ex: 10000",
+                    discount_percentage_label: "Discount Percentage (%)",
+                    discount_percentage_placeholder: "Ex: 30",
+                    calculate_discount_btn: "Calculate Discount",
+                    saved_amount_label: "Amount Saved",
+                    final_price_label: "Final Price",
+                    unit_converter_title: "Unit Converter",
+                    measurement_type_label: "Measurement Type",
+                    from_label: "From",
+                    to_label: "To",
+                    value_placeholder: "Value...",
+                    result_placeholder: "Result...",
+                    footer_text: "© 2024 Digital Toolkit Pro. Designed for maximum efficiency.",
+                    measurement_types: { longitud: "Length", masa: "Mass", temperatura: "Temperature" },
+                     vat_countries: {
+                        "0.19_cl": "Chile (19%)", "0.21_es": "Spain (21%)", "0.16_mx": "Mexico (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Peru (18%)", "custom": "Other (enter manually)..."
+                    },
+                },
+                pt: {
+                    main_title: "Kit de Ferramentas Digitais Pro",
+                    subtitle: "Ferramentas inteligentes para um mundo moderno",
+                    num_to_text_title: "Conversor de Número para Texto",
+                    num_to_text_placeholder: "Digite um número (até 12 dígitos)...",
+                    uppercase_btn: "MAIÚSCULA",
+                    lowercase_btn: "minúscula",
+                    copy_result_title: "Copiar resultado",
+                    text_to_num_title: "Conversor de Texto para Número",
+                    text_to_num_placeholder: "Digite um texto...",
+                    convert_to_num_btn: "Converter para Número",
+                    vat_calculator_title: "Calculadora de IVA",
+                    country_vat_label: "País (IVA %)",
+                    custom_vat_label: "Inserir % de IVA personalizado",
+                    custom_vat_placeholder: "Ex: 25",
+                    amount_label: "Valor",
+                    amount_placeholder: "Digite o valor para calcular...",
+                    calc_from_net_btn: "Calcular do Líquido",
+                    calc_from_total_btn: "Calcular do Total",
+                    results_title: "Resultados:",
+                    net_label: "Líquido",
+                    vat_label: "IVA",
+                    total_label: "Total",
+                    discount_calculator_title: "Calculadora de Descontos",
+                    original_price_label: "Preço Original",
+                    original_price_placeholder: "Ex: 10000",
+                    discount_percentage_label: "Percentual de Desconto (%)",
+                    discount_percentage_placeholder: "Ex: 30",
+                    calculate_discount_btn: "Calcular Desconto",
+                    saved_amount_label: "Valor Economizado",
+                    final_price_label: "Preço Final",
+                    unit_converter_title: "Conversor de Unidades",
+                    measurement_type_label: "Tipo de Medida",
+                    from_label: "De",
+                    to_label: "Para",
+                    value_placeholder: "Valor...",
+                    result_placeholder: "Resultado...",
+                    footer_text: "© 2024 Kit de Ferramentas Digitais Pro. Projetado para máxima eficiência.",
+                    measurement_types: { longitud: "Comprimento", masa: "Massa", temperatura: "Temperatura" },
+                    vat_countries: {
+                        "0.19_cl": "Chile (19%)", "0.21_es": "Espanha (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colômbia (19%)", "0.12_ec": "Equador (12%)", "0.18_pe": "Peru (18%)", "custom": "Outro (inserir manualmente)..."
+                    },
+                }
+            };
+            
+            let currentLang = 'es';
+
+            // --- FUNCTION DEFINITIONS ---
+            
+            function setLanguage(lang) {
+                if (!translations[lang]) return;
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                languageSelector.value = lang;
+
+                document.querySelectorAll('[data-translate-key]').forEach(el => {
+                    const key = el.getAttribute('data-translate-key');
+                    el.textContent = translations[lang][key] || el.textContent;
+                });
+                
+                document.querySelectorAll('[data-translate-key-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-translate-key-placeholder');
+                    el.placeholder = translations[lang][key] || el.placeholder;
+                });
+
+                 document.querySelectorAll('[data-translate-key-title]').forEach(el => {
+                    const key = el.getAttribute('data-translate-key-title');
+                    el.title = translations[lang][key] || el.title;
+                });
+                
+                const unitCategorySelect = document.getElementById('unitCategory');
+                unitCategorySelect.innerHTML = '';
+                const measurementTypes = translations[lang].measurement_types;
+                for (const key in measurementTypes) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = measurementTypes[key];
+                    unitCategorySelect.appendChild(option);
+                }
+                populateUnits(); 
+
+                const countryVat = document.getElementById('countryVat');
+                countryVat.innerHTML = '';
+                const vatCountries = translations[lang].vat_countries;
+                for (const key in vatCountries) {
+                    const option = document.createElement('option');
+                    option.value = key.split('_')[0];
+                    option.textContent = vatCountries[key];
+                    countryVat.appendChild(option);
+                }
+            }
+
+            const formatCurrency = (num) => isNaN(num) ? '-' : num.toLocaleString(currentLang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const formatDate = (date) => date.toLocaleDateString(currentLang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const formatTime = (date) => date.toLocaleTimeString(currentLang);
+
+            function updateClock() {
+                const now = new Date();
+                currentDateEl.textContent = formatDate(now);
+                currentTimeEl.textContent = formatTime(now);
+            }
+            
+            async function getGeoInfo() {
+                try {
+                    const response = await fetch('https://get.geojs.io/v1/ip/country.json');
+                    if (!response.ok) throw new Error('Network response was not ok.');
+                    const data = await response.json();
+                    const countryCode = data.country;
+                    if (countryCode) {
+                        userFlag.src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
+                        userFlag.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("No se pudo obtener la información de geolocalización:", error);
+                    userFlag.classList.add('hidden');
+                }
+            }
+
+            function numeroALetras(numStr) { numStr=String(numStr).replace(/[^0-9]/g,'');if(!numStr)return 'Por favor, ingresa un número.';if(numStr.length>12){return "Número demasiado grande (máx. 999,999,999,999).";}let num=parseInt(numStr,10);if(isNaN(num))return 'Entrada no válida.';if(num===0)return 'cero';function Centenas(num){let centenas=Math.floor(num/100);let decenas=num%100;let texto='';switch(centenas){case 1:texto=(decenas>0)?'ciento '+Decenas(decenas):'cien';break;case 2:texto='doscientos '+Decenas(decenas);break;case 3:texto='trescientos '+Decenas(decenas);break;case 4:texto='cuatrocientos '+Decenas(decenas);break;case 5:texto='quinientos '+Decenas(decenas);break;case 6:texto='seiscientos '+Decenas(decenas);break;case 7:texto='setecientos '+Decenas(decenas);break;case 8:texto='ochocientos '+Decenas(decenas);break;case 9:texto='novecientos '+Decenas(decenas);break;default:texto=Decenas(decenas);}return texto.trim();}function Decenas(num){let decena=Math.floor(num/10);let unidad=num%10;switch(decena){case 1:switch(unidad){case 0:return 'diez';case 1:return 'once';case 2:return 'doce';case 3:return 'trece';case 4:return 'catorce';case 5:return 'quince';default:return 'dieci'+Unidades(unidad);}case 2:return unidad===0?'veinte':'veinti'+Unidades(unidad);case 3:return DecenasY('treinta',unidad);case 4:return DecenasY('cuarenta',unidad);case 5:return DecenasY('cincuenta',unidad);case 6:return DecenasY('sesenta',unidad);case 7:return DecenasY('setenta',unidad);case 8:return DecenasY('ochenta',unidad);case 9:return DecenasY('noventa',unidad);case 0:return Unidades(unidad);}}function DecenasY(strSin,numUnidades){if(numUnidades>0)return strSin+' y '+Unidades(numUnidades);return strSin;}function Unidades(num){switch(num){case 1:return 'un';case 2:return 'dos';case 3:return 'tres';case 4:return 'cuatro';case 5:return 'cinco';case 6:return 'seis';case 7:return 'siete';case 8:return 'ocho';case 9:return 'nueve';}return '';}function Miles(num){let miles=Math.floor(num/1000);let resto=num%1000;let strMiles='';if(miles>0){strMiles=(miles===1)?'mil':Centenas(miles)+' mil';}let strResto=Centenas(resto);return(strMiles+' '+strResto).trim();}function Millones(num){let millones=Math.floor(num/1000000);let resto=num%1000000;let strMillones='';if(millones>0){if(millones===1){strMillones='un millón';}else{let texto=Centenas(millones);if(texto.endsWith('un'))texto=texto.slice(0,-2)+'uno';strMillones=texto+' millones';}}let strResto=Miles(resto);return(strMillones+' '+strResto).trim();}function MilesDeMillones(num){let milesDeMillones=Math.floor(num/1000000000);let resto=num%1000000000;let strMilesMillones='';if(milesDeMillones>0){strMilesMillones=(milesDeMillones===1)?'mil millones':Centenas(milesDeMillones)+' mil millones';}let strResto=Millones(resto);return(strMilesMillones+' '+strResto).trim();}let letras;if(num>=1000000000){letras=MilesDeMillones(num);}else if(num>=1000000){letras=Millones(num);}else if(num>=1000){letras=Miles(num);}else{letras=Centenas(num);}if(letras==='un')return 'uno';if(letras.endsWith('un')){const base=letras.slice(0,-2);if(base==='veinti')return 'veintiuno';}return letras.trim().replace(/\s+/g,' ');}
+            const convertNumToText = (casing) => { const value = numToTextInput.value; const text = numeroALetras(value); numToTextResult.textContent = casing === 'upper' ? text.toUpperCase() : text.toLowerCase(); };
+            
+            function textoANumero(texto) { const wordMap={'cero':0,'uno':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciséis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintidos':22,'veintitres':23,'veinticuatro':24,'veinticinco':25,'veintiseis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};const scaleMap={'mil':1000,'millón':1000000,'millones':1000000};texto=texto.toLowerCase().replace(/ y /g,' ').replace(/ de /g,' ').trim();if(!texto)return 'Por favor, ingresa un texto.';const palabras=texto.split(/\s+/);let total=0;let grupoActual=0;for(let i=0;i<palabras.length;i++){const palabra=palabras[i];if(wordMap[palabra]!==undefined){grupoActual+=wordMap[palabra];}else if(scaleMap[palabra]!==undefined){const escala=scaleMap[palabra];if(grupoActual===0){grupoActual=1;}grupoActual*=escala;if(palabra==='mil'&&i+1<palabras.length&&(palabras[i+1]==='millón'||palabras[i+1]==='millones')){}else{total+=grupoActual;grupoActual=0;}}else{return `Palabra no reconocida: "${palabra}"`;}}total+=grupoActual;return total.toLocaleString(currentLang);}
+            
+            function getVatRate() { const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection); } }
+            
+            const units = {longitud: {'Metros (m)': 1,'Kilómetros (km)': 1000,'Centímetros (cm)': 0.01,'Milímetros (mm)': 0.001,'Millas (mi)': 1609.34,'Pies (ft)': 0.3048,'Pulgadas (in)': 0.0254,},masa: {'Gramos (g)': 1,'Kilogramos (kg)': 1000,'Libras (lb)': 453.592,'Onzas (oz)': 28.3495,'Toneladas (t)': 1000000,},temperatura: {'Celsius (°C)': 'celsius','Fahrenheit (°F)': 'fahrenheit','Kelvin (K)': 'kelvin',}};
+            
+            function populateUnits() {const category = unitCategory.value;const unitOptions = Object.keys(units[category]);fromUnit.innerHTML = '';toUnit.innerHTML = '';unitOptions.forEach(unit => {const option1 = document.createElement('option');option1.value = unit;option1.textContent = unit;fromUnit.appendChild(option1);const option2 = document.createElement('option');option2.value = unit;option2.textContent = unit;toUnit.appendChild(option2);});fromUnit.selectedIndex = 0;toUnit.selectedIndex = 1;convertUnits();}
+            
+            function convertUnits() {const category = unitCategory.value;const val = parseFloat(fromValue.value);const fromU = fromUnit.value;const toU = toUnit.value;if (isNaN(val) || !fromU || !toU) {toValue.value = '';return;}let result;if (category === 'temperatura') {const fromType = units.temperatura[fromU];const toType = units.temperatura[toU];if (fromType === 'celsius') {if (toType === 'fahrenheit') result = (val * 9/5) + 32;else if (toType === 'kelvin') result = val + 273.15;else result = val;} else if (fromType === 'fahrenheit') {if (toType === 'celsius') result = (val - 32) * 5/9;else if (toType === 'kelvin') result = (val - 32) * 5/9 + 273.15;else result = val;} else if (fromType === 'kelvin') {if (toType === 'celsius') result = val - 273.15;else if (toType === 'fahrenheit') result = (val - 273.15) * 9/5 + 32;else result = val;}} else {const fromFactor = units[category][fromU];const toFactor = units[category][toU];const baseValue = val * fromFactor;result = baseValue / toFactor;}toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);}
+            
+            // --- EVENT LISTENERS ---
+            languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
+            
+            toUpperBtn.addEventListener('click', () => convertNumToText('upper'));
+            toLowerBtn.addEventListener('click', () => convertNumToText('lower'));
+            copyNumToTextBtn.addEventListener('click', () => {const textToCopy = numToTextResult.textContent;if (!textToCopy) return;const textArea = document.createElement('textarea');textArea.value = textToCopy;document.body.appendChild(textArea);textArea.select();try {document.execCommand('copy');const originalIcon = copyNumToTextBtn.innerHTML;copyNumToTextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;setTimeout(() => {copyNumToTextBtn.innerHTML = originalIcon;}, 1500);} catch (err) {console.error('Error al copiar el texto: ', err);}document.body.removeChild(textArea);});
+            textToNumBtn.addEventListener('click', () => { const text = textToNumInput.value; const result = textoANumero(text); textToNumResult.textContent = result; });
+            countryVatSelect.addEventListener('change', () => { if (countryVatSelect.value === 'custom') { customVatContainer.classList.remove('hidden'); } else { customVatContainer.classList.add('hidden'); } });
+            calculateFromNetBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const net = amount;const vat = net * vatRate;const total = net + vat;resultNet.textContent = formatCurrency(net);resultVat.textContent = formatCurrency(vat);resultTotal.textContent = formatCurrency(total);});
+            calculateFromTotalBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const total = amount;const net = total / (1 + vatRate);const vat = total - net;resultNet.textContent = formatCurrency(net);resultVat.textContent = formatCurrency(vat);resultTotal.textContent = formatCurrency(total);});
+            calculateDiscountBtn.addEventListener('click', () => {const originalPrice = parseFloat(originalPriceInput.value);const discountPercentage = parseFloat(discountPercentageInput.value);if (isNaN(originalPrice) || isNaN(discountPercentage) || originalPrice < 0 || discountPercentage < 0) {savedAmount.textContent = '-';finalPrice.textContent = '-';return;}const amountToSave = originalPrice * (discountPercentage / 100);const priceWithDiscount = originalPrice - amountToSave;savedAmount.textContent = '$ ' + formatCurrency(amountToSave);finalPrice.textContent = '$ ' + formatCurrency(priceWithDiscount);});
+            unitCategory.addEventListener('change', populateUnits);
+            fromValue.addEventListener('input', convertUnits);
+            fromUnit.addEventListener('change', convertUnits);
+            toUnit.addEventListener('change', convertUnits);
+
+            // --- INITIALIZATION ---
+            const userLang = navigator.language.split('-')[0];
+            setLanguage(translations[userLang] ? userLang : 'es');
+            updateClock();
+            setInterval(updateClock, 1000);
+            getGeoInfo();
+
+        });
+    </script>
+</body>
+</html>
