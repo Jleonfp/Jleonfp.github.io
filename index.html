@@ -363,7 +363,14 @@
             const calculatorHistory = document.getElementById('calculator-history');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
 
-            // --- INTERNATIONALIZATION (I18N) LOGIC ---
+            // --- DATA AND LOGIC ---
+            
+            const unitData = {
+                longitud: { meters: 1, kilometers: 1000, centimeters: 0.01, millimeters: 0.001, miles: 1609.34, feet: 0.3048, inches: 0.0254 },
+                masa: { grams: 1, kilograms: 1000, pounds: 453.592, ounces: 28.3495, tons: 1000000 },
+                temperatura: { celsius: 'celsius', fahrenheit: 'fahrenheit', kelvin: 'kelvin' }
+            };
+            
             const translations = {
                 es: {
                     main_title: "Digital Toolkit Pro",
@@ -406,6 +413,11 @@
                     measurement_types: { longitud: "Longitud", masa: "Masa", temperatura: "Temperatura" },
                     vat_countries: {
                         "0.19_cl": "Chile (19%)", "0.21_es": "España (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Perú (18%)", "custom": "Otro (ingresar manualmente)..."
+                    },
+                    units: {
+                        meters: 'Metros (m)', kilometers: 'Kilómetros (km)', centimeters: 'Centímetros (cm)', millimeters: 'Milímetros (mm)', miles: 'Millas (mi)', feet: 'Pies (ft)', inches: 'Pulgadas (in)',
+                        grams: 'Gramos (g)', kilograms: 'Kilogramos (kg)', pounds: 'Libras (lb)', ounces: 'Onzas (oz)', tons: 'Toneladas (t)',
+                        celsius: 'Celsius (°C)', fahrenheit: 'Fahrenheit (°F)', kelvin: 'Kelvin (K)'
                     },
                     modern_calculator_title: "Calculadora",
                     history_title: "Historial",
@@ -450,15 +462,20 @@
                     result_placeholder: "Result...",
                     footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Length", masa: "Mass", temperatura: "Temperature" },
-                     vat_countries: {
+                    vat_countries: {
                         "0.19_cl": "Chile (19%)", "0.21_es": "Spain (21%)", "0.16_mx": "Mexico (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Peru (18%)", "custom": "Other (enter manually)..."
+                    },
+                    units: {
+                        meters: 'Meters (m)', kilometers: 'Kilometers (km)', centimeters: 'Centimeters (cm)', millimeters: 'Millimeters (mm)', miles: 'Miles (mi)', feet: 'Feet (ft)', inches: 'Inches (in)',
+                        grams: 'Grams (g)', kilograms: 'Kilograms (kg)', pounds: 'Pounds (lb)', ounces: 'Ounces (oz)', tons: 'Tons (t)',
+                        celsius: 'Celsius (°C)', fahrenheit: 'Fahrenheit (°F)', kelvin: 'Kelvin (K)'
                     },
                     modern_calculator_title: "Calculator",
                     history_title: "History",
                     clear_history_btn: "Clear History",
                 },
                 pt: {
-                    main_title: "Digital Toolkit Pro",
+                    main_title: "Kit de Ferramentas Digitais Pro",
                     subtitle: "Ferramentas online úteis",
                     num_to_text_title: "Conversor de Número para Texto",
                     num_to_text_placeholder: "Digite um número (até 12 dígitos)...",
@@ -499,6 +516,11 @@
                     vat_countries: {
                         "0.19_cl": "Chile (19%)", "0.21_es": "Espanha (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colômbia (19%)", "0.12_ec": "Equador (12%)", "0.18_pe": "Peru (18%)", "custom": "Outro (inserir manually)..."
                     },
+                    units: {
+                        meters: 'Metros (m)', kilometers: 'Quilômetros (km)', centimeters: 'Centímetros (cm)', millimeters: 'Milímetros (mm)', miles: 'Milhas (mi)', feet: 'Pés (ft)', inches: 'Polegadas (in)',
+                        grams: 'Gramas (g)', kilograms: 'Quilogramas (kg)', pounds: 'Libras (lb)', ounces: 'Onças (oz)', tons: 'Toneladas (t)',
+                        celsius: 'Celsius (°C)', fahrenheit: 'Fahrenheit (°F)', kelvin: 'Kelvin (K)'
+                    },
                     modern_calculator_title: "Calculadora",
                     history_title: "Histórico",
                     clear_history_btn: "Limpar Histórico",
@@ -536,6 +558,7 @@
                 });
                 
                 const unitCategorySelect = document.getElementById('unitCategory');
+                const currentCategory = unitCategorySelect.value;
                 unitCategorySelect.innerHTML = '';
                 const measurementTypes = translations[lang].measurement_types;
                 for (const key in measurementTypes) {
@@ -544,9 +567,11 @@
                     option.textContent = measurementTypes[key];
                     unitCategorySelect.appendChild(option);
                 }
+                if (currentCategory) unitCategorySelect.value = currentCategory;
                 populateUnits(); 
 
                 const countryVat = document.getElementById('countryVat');
+                const currentVat = countryVat.value;
                 countryVat.innerHTML = '';
                 const vatCountries = translations[lang].vat_countries;
                 for (const key in vatCountries) {
@@ -555,6 +580,7 @@
                     option.textContent = vatCountries[key];
                     countryVat.appendChild(option);
                 }
+                if(currentVat) countryVat.value = currentVat;
             }
 
             const formatCurrency = (num, lang) => isNaN(num) ? '-' : num.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -597,9 +623,71 @@
             const convertNumToText = (casing) => { const value = numToTextInput.value; const text = numeroALetras(value); numToTextResult.textContent = casing === 'upper' ? text.toUpperCase() : text.toLowerCase(); };
             function textoANumero(texto) { /* Unchanged */ const wordMap={'cero':0,'uno':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciséis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintidos':22,'veintitres':23,'veinticuatro':24,'veinticinco':25,'veintiseis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};const scaleMap={'mil':1000,'millón':1000000,'millones':1000000};texto=texto.toLowerCase().replace(/ y /g,' ').replace(/ de /g,' ').trim();if(!texto)return 'Por favor, ingresa un texto.';const palabras=texto.split(/\s+/);let total=0;let grupoActual=0;for(let i=0;i<palabras.length;i++){const palabra=palabras[i];if(wordMap[palabra]!==undefined){grupoActual+=wordMap[palabra];}else if(scaleMap[palabra]!==undefined){const escala=scaleMap[palabra];if(grupoActual===0){grupoActual=1;}grupoActual*=escala;if(palabra==='mil'&&i+1<palabras.length&&(palabras[i+1]==='millón'||palabras[i+1]==='millones')){}else{total+=grupoActual;grupoActual=0;}}else{return `Palabra no reconocida: "${palabra}"`;}}total+=grupoActual;return total.toLocaleString(currentLang);}
             function getVatRate() { /* Unchanged */ const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection); } }
-            const units = {longitud: {'Metros (m)': 1,'Kilómetros (km)': 1000,'Centímetros (cm)': 0.01,'Milímetros (mm)': 0.001,'Millas (mi)': 1609.34,'Pies (ft)': 0.3048,'Pulgadas (in)': 0.0254,},masa: {'Gramos (g)': 1,'Kilogramos (kg)': 1000,'Libras (lb)': 453.592,'Onzas (oz)': 28.3495,'Toneladas (t)': 1000000,},temperatura: {'Celsius (°C)': 'celsius','Fahrenheit (°F)': 'fahrenheit','Kelvin (K)': 'kelvin',}};
-            function populateUnits() { /* Unchanged */ const category = unitCategory.value;const unitOptions = Object.keys(units[category]);fromUnit.innerHTML = '';toUnit.innerHTML = '';unitOptions.forEach(unit => {const option1 = document.createElement('option');option1.value = unit;option1.textContent = unit;fromUnit.appendChild(option1);const option2 = document.createElement('option');option2.value = unit;option2.textContent = unit;toUnit.appendChild(option2);});fromUnit.selectedIndex = 0;toUnit.selectedIndex = 1;convertUnits();}
-            function convertUnits() { /* Unchanged */ const category = unitCategory.value;const val = parseFloat(fromValue.value);const fromU = fromUnit.value;const toU = toUnit.value;if (isNaN(val) || !fromU || !toU) {toValue.value = '';return;}let result;if (category === 'temperatura') {const fromType = units.temperatura[fromU];const toType = units.temperatura[toU];if (fromType === 'celsius') {if (toType === 'fahrenheit') result = (val * 9/5) + 32;else if (toType === 'kelvin') result = val + 273.15;else result = val;} else if (fromType === 'fahrenheit') {if (toType === 'celsius') result = (val - 32) * 5/9;else if (toType === 'kelvin') result = (val - 32) * 5/9 + 273.15;else result = val;} else if (fromType === 'kelvin') {if (toType === 'celsius') result = val - 273.15;else if (toType === 'fahrenheit') result = (val - 273.15) * 9/5 + 32;else result = val;}} else {const fromFactor = units[category][fromU];const toFactor = units[category][toU];const baseValue = val * fromFactor;result = baseValue / toFactor;}toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);}
+            
+            function populateUnits() {
+                const category = unitCategory.value;
+                const unitKeys = Object.keys(unitData[category]);
+                const translatedUnits = translations[currentLang].units;
+                
+                fromUnit.innerHTML = '';
+                toUnit.innerHTML = '';
+
+                unitKeys.forEach(key => {
+                    const option1 = document.createElement('option');
+                    option1.value = key;
+                    option1.textContent = translatedUnits[key] || key;
+                    fromUnit.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = key;
+                    option2.textContent = translatedUnits[key] || key;
+                    toUnit.appendChild(option2);
+                });
+
+                fromUnit.selectedIndex = 0;
+                toUnit.selectedIndex = 1;
+                
+                convertUnits();
+            }
+
+            function convertUnits() {
+                const category = unitCategory.value;
+                const val = parseFloat(fromValue.value);
+                const fromUKey = fromUnit.value;
+                const toUKey = toUnit.value;
+                
+                if (isNaN(val) || !fromUKey || !toUKey) {
+                    toValue.value = '';
+                    return;
+                }
+
+                let result;
+
+                if (category === 'temperatura') {
+                    const fromType = unitData.temperatura[fromUKey];
+                    const toType = unitData.temperatura[toUKey];
+                    if (fromType === 'celsius') {
+                        if (toType === 'fahrenheit') result = (val * 9/5) + 32;
+                        else if (toType === 'kelvin') result = val + 273.15;
+                        else result = val;
+                    } else if (fromType === 'fahrenheit') {
+                        if (toType === 'celsius') result = (val - 32) * 5/9;
+                        else if (toType === 'kelvin') result = (val - 32) * 5/9 + 273.15;
+                        else result = val;
+                    } else if (fromType === 'kelvin') {
+                        if (toType === 'celsius') result = val - 273.15;
+                        else if (toType === 'fahrenheit') result = (val - 273.15) * 9/5 + 32;
+                        else result = val;
+                    }
+                } else {
+                    const fromFactor = unitData[category][fromUKey];
+                    const toFactor = unitData[category][toUKey];
+                    const baseValue = val * fromFactor;
+                    result = baseValue / toFactor;
+                }
+                
+                toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);
+            }
 
             // --- MODERN CALCULATOR LOGIC ---
             let currentInput = '0';
@@ -721,3 +809,4 @@
     </script>
 </body>
 </html>
+
