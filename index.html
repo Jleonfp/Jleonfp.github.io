@@ -37,14 +37,14 @@
             transform: translateY(-5px);
         }
 
-        .input-field {
+        .input-field, .textarea-field {
             background-color: #1f2937;
             border: 1px solid #4b5563;
             color: #e0e0e0;
             transition: all 0.3s ease;
         }
 
-        .input-field:focus {
+        .input-field:focus, .textarea-field:focus {
             outline: none;
             border-color: #00ffff;
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
@@ -140,15 +140,13 @@
     <!-- Header -->
     <header class="text-center mb-12 w-full max-w-6xl">
         <div class="flex justify-between items-start">
-             <!-- User Info: Date, Time, Flag -->
-            <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4 text-gray-400">
+             <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4 text-gray-400">
                 <img id="user-flag" src="" alt="Bandera del país" class="w-8 h-auto rounded-md hidden" onerror="this.style.display='none'"/>
                 <div class="text-sm text-left">
                     <span id="current-date" data-translate-key="current_date"></span>
                     <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono bg-gray-800/50 px-2 py-1 rounded"></span>
                 </div>
             </div>
-            <!-- Language Selector -->
             <div class="relative">
                 <select id="language-selector" class="input-field appearance-none p-2 rounded-lg pr-8">
                     <option value="es">Español</option>
@@ -166,16 +164,16 @@
     <!-- Main Grid for Tools -->
     <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        <!-- Number/Text Converter Card -->
+        <!-- Converters Column -->
         <div class="card rounded-2xl p-6 md:p-8 space-y-8">
             <!-- Number to Text Section -->
             <div>
-                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="num_to_text_title">Conversor de Número a Texto</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="num_to_text_title"></h2>
                 <div class="space-y-4">
                     <input type="number" id="numToTextInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="num_to_text_placeholder">
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button id="toUpperBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="uppercase_btn">MAYÚSCULA</button>
-                        <button id="toLowerBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="lowercase_btn">minúscula</button>
+                        <button id="toUpperBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="uppercase_btn"></button>
+                        <button id="toLowerBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="lowercase_btn"></button>
                     </div>
                     <div class="flex items-center gap-2">
                         <div id="numToTextResult" class="result-box p-4 rounded-lg text-cyan-200 w-full"></div>
@@ -188,41 +186,41 @@
 
             <!-- Text to Number Section -->
             <div>
-                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="text_to_num_title">Conversor de Texto a Número</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="text_to_num_title"></h2>
                 <div class="space-y-4">
                     <input type="text" id="textToNumInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="text_to_num_placeholder">
-                    <button id="textToNumBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="convert_to_num_btn">Convertir a Número</button>
+                    <button id="textToNumBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="convert_to_num_btn"></button>
                     <div id="textToNumResult" class="result-box p-4 rounded-lg text-cyan-200"></div>
                 </div>
             </div>
         </div>
 
-        <!-- VAT Calculator Card -->
+        <!-- Calculators Column -->
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="vat_calculator_title">Calculadora de IVA</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="vat_calculator_title"></h2>
             <div class="space-y-6">
                 <div>
-                    <label for="countryVat" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="country_vat_label">País (IVA %)</label>
+                    <label for="countryVat" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="country_vat_label"></label>
                     <select id="countryVat" class="input-field w-full p-3 rounded-lg"></select>
                 </div>
                 <div id="customVatContainer" class="hidden">
-                    <label for="customVatInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="custom_vat_label">Ingresar % de IVA personalizado</label>
+                    <label for="customVatInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="custom_vat_label"></label>
                     <input type="number" id="customVatInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="custom_vat_placeholder">
                 </div>
                 <div>
-                    <label for="amountInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label">Monto</label>
+                    <label for="amountInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label"></label>
                     <input type="number" id="amountInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="amount_placeholder">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button id="calculateFromNet" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_net_btn">Calcular desde Neto</button>
-                    <button id="calculateFromTotal" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_total_btn">Calcular desde Total</button>
+                    <button id="calculateFromNet" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_net_btn"></button>
+                    <button id="calculateFromTotal" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_total_btn"></button>
                 </div>
                 <div class="space-y-4 pt-4 border-t border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title">Resultados:</h3>
+                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title"></h3>
                     <div class="grid grid-cols-3 gap-2 text-center text-sm">
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="net_label">Neto</span><span id="resultNet" class="font-mono text-lg text-cyan-300">-</span></div>
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="vat_label">IVA</span><span id="resultVat" class="font-mono text-lg text-cyan-300">-</span></div>
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="total_label">Total</span><span id="resultTotal" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="net_label"></span><span id="resultNet" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="vat_label"></span><span id="resultVat" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="total_label"></span><span id="resultTotal" class="font-mono text-lg text-cyan-300">-</span></div>
                     </div>
                 </div>
             </div>
@@ -230,9 +228,8 @@
         
         <!-- Modern Calculator -->
         <div class="card lg:col-span-2 rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="modern_calculator_title">Calculadora</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="modern_calculator_title"></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Calculator -->
                 <div class="md:col-span-2">
                     <div id="calculator-display" class="text-right text-4xl p-4 rounded-t-lg font-mono break-all">0</div>
                     <div class="grid grid-cols-4 gap-2 mt-2">
@@ -257,55 +254,51 @@
                         <button class="calc-btn calc-equals" data-key="=">=</button>
                     </div>
                 </div>
-                <!-- History -->
                 <div class="md:col-span-1">
-                     <h3 class="text-lg font-semibold mb-2" data-translate-key="history_title">Historial</h3>
-                     <div id="calculator-history" class="result-box h-48 p-2 rounded-lg space-y-1 overflow-y-auto">
-                        <!-- History items will be injected here -->
-                     </div>
-                     <button id="clear-history-btn" class="btn-secondary w-full mt-2 py-2 rounded-lg text-sm" data-translate-key="clear_history_btn">Limpiar Historial</button>
+                     <h3 class="text-lg font-semibold mb-2" data-translate-key="history_title"></h3>
+                     <div id="calculator-history" class="result-box h-48 p-2 rounded-lg space-y-1 overflow-y-auto"></div>
+                     <button id="clear-history-btn" class="btn-secondary w-full mt-2 py-2 rounded-lg text-sm" data-translate-key="clear_history_btn"></button>
                 </div>
             </div>
         </div>
 
-        <!-- Discount Calculator Card -->
+        <!-- Discount & Unit Converters -->
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="discount_calculator_title">Calculadora de Descuentos</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="discount_calculator_title"></h2>
             <div class="space-y-6">
                 <div>
-                    <label for="originalPriceInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="original_price_label">Precio Original</label>
+                    <label for="originalPriceInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="original_price_label"></label>
                     <input type="number" id="originalPriceInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="original_price_placeholder">
                 </div>
                 <div>
-                    <label for="discountPercentageInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="discount_percentage_label">Porcentaje de Descuento (%)</label>
+                    <label for="discountPercentageInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="discount_percentage_label"></label>
                     <input type="number" id="discountPercentageInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="discount_percentage_placeholder">
                 </div>
-                <button id="calculateDiscountBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calculate_discount_btn">Calcular Descuento</button>
+                <button id="calculateDiscountBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calculate_discount_btn"></button>
                 <div class="space-y-4 pt-4 border-t border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title">Resultados:</h3>
+                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title"></h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center text-sm">
-                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="saved_amount_label">Monto Ahorrado</span><span id="savedAmount" class="font-mono text-xl text-green-400">-</span></div>
-                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="final_price_label">Precio Final</span><span id="finalPrice" class="font-mono text-xl text-cyan-300">-</span></div>
+                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="saved_amount_label"></span><span id="savedAmount" class="font-mono text-xl text-green-400">-</span></div>
+                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="final_price_label"></span><span id="finalPrice" class="font-mono text-xl text-cyan-300">-</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Unit Converter Card -->
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="unit_converter_title">Conversor de Unidades</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="unit_converter_title"></h2>
             <div class="space-y-4">
                  <div>
-                    <label for="unitCategory" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="measurement_type_label">Tipo de Medida</label>
+                    <label for="unitCategory" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="measurement_type_label"></label>
                     <select id="unitCategory" class="input-field w-full p-3 rounded-lg"></select>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-full">
-                        <label for="fromUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="from_label">Desde</label>
+                        <label for="fromUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="from_label"></label>
                         <select id="fromUnit" class="input-field w-full p-3 rounded-lg"></select>
                     </div>
                     <div class="w-full">
-                         <label for="toUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="to_label">Hasta</label>
+                         <label for="toUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="to_label"></label>
                         <select id="toUnit" class="input-field w-full p-3 rounded-lg"></select>
                     </div>
                 </div>
@@ -361,7 +354,7 @@
             const calculatorButtons = document.querySelectorAll('.calc-btn');
             const calculatorHistory = document.getElementById('calculator-history');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
-
+            
             // --- DATA AND LOGIC ---
             
             const unitData = {
@@ -375,7 +368,7 @@
                     main_title: "Digital Toolkit Pro",
                     subtitle: "Herramientas online útiles",
                     num_to_text_title: "Conversor de Número a Texto",
-                    num_to_text_placeholder: "Ingresa un número...",
+                    num_to_text_placeholder: "Ingresa un número (hasta 12 dígitos)...",
                     uppercase_btn: "MAYÚSCULA",
                     lowercase_btn: "minúscula",
                     copy_result_title: "Copiar resultado",
@@ -426,7 +419,7 @@
                     main_title: "Digital Toolkit Pro",
                     subtitle: "Useful online tools",
                     num_to_text_title: "Number to Text Converter",
-                    num_to_text_placeholder: "Enter a number...",
+                    num_to_text_placeholder: "Enter a number (up to 12 digits)...",
                     uppercase_btn: "UPPERCASE",
                     lowercase_btn: "lowercase",
                     copy_result_title: "Copy result",
@@ -715,7 +708,7 @@
                     calculatorHistory.appendChild(li);
                 });
             }
-
+            
             // --- EVENT LISTENERS ---
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
             toUpperBtn.addEventListener('click', () => convertNumToText('upper'));
