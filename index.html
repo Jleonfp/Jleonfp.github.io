@@ -939,6 +939,17 @@
 
             async function loadIndicators() {
                 try {
+                    // 1) Archivo propio actualizado por GitHub Actions desde el Banco Central
+                    const f = await fetchJson('data/indicadores.json?t=' + Date.now());
+                    if (!f.dolar) throw new Error('Archivo sin datos');
+                    ind.data = { dolar: f.dolar, euro: f.euro, uf: f.uf, utm: f.utm };
+                    const [y, m, d] = f.fecha.split('-');
+                    ind.dateStr = `${d}-${m}-${y}`;
+                    ind.source = 'bcch';
+                    ind.status = 'ok';
+                } catch (err0) {
+                console.warn('Archivo de indicadores no disponible:', err0);
+                try {
                     // Fuente principal: mindicador.cl (Banco Central de Chile; incluye UF y UTM)
                     const d = await fetchJson('https://mindicador.cl/api');
                     if (!d.dolar || !d.dolar.valor) throw new Error('Respuesta sin datos');
@@ -966,6 +977,7 @@
                         if (cached && cached.data) { ind.data = cached.data; ind.dateStr = cached.dateStr; ind.status = 'cached'; }
                         else ind.status = 'error';
                     }
+                }
                 }
                 if (ind.status === 'ok' && ind.source === 'bcch') {
                     try { localStorage.setItem('indicadores', JSON.stringify({ data: ind.data, dateStr: ind.dateStr })); } catch (x) {}

@@ -1,0 +1,34 @@
+name: Actualizar indicadores (Dólar, Euro, UF, UTM)
+
+on:
+  schedule:
+    # Hora UTC. El dólar observado se publica cada día hábil; se revisa varias veces.
+    - cron: '17 11,15,21,1 * * *'
+  workflow_dispatch: # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Obtener valores
+        env:
+          BCCH_USER: ${{ secrets.BCCH_USER }}
+          BCCH_PASS: ${{ secrets.BCCH_PASS }}
+        run: node scripts/actualizar-indicadores.mjs
+      - name: Guardar cambios
+        run: |
+          if git diff --quiet -- data/indicadores.json && git ls-files --error-unmatch data/indicadores.json >/dev/null 2>&1; then
+            echo "Sin cambios"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add data/indicadores.json
+          git commit -m "Actualiza indicadores $(date -u +%F)"
+          git push
