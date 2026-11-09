@@ -169,7 +169,7 @@
             <h2 class="text-2xl font-semibold mb-1 text-cyan-300" data-translate-key="indicators_title"></h2>
             <p id="indicatorsStatus" class="text-sm text-gray-400 mb-4"></p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
-                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="dollar_label"></span><span id="indDolar" class="font-mono text-xl text-cyan-300">-</span></div>
+                <div class="bg-gray-700/50 p-3 rounded-lg"><span id="indDolarLabel" class="block text-xs text-gray-400" data-translate-key="dollar_label"></span><span id="indDolar" class="font-mono text-xl text-cyan-300">-</span></div>
                 <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">Euro</span><span id="indEuro" class="font-mono text-xl text-cyan-300">-</span></div>
                 <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UF</span><span id="indUf" class="font-mono text-xl text-cyan-300">-</span></div>
                 <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UTM</span><span id="indUtm" class="font-mono text-xl text-cyan-300">-</span></div>
@@ -410,6 +410,7 @@
                     convert_to_num_btn: "Convertir a Número",
                     indicators_title: "Dólar, Euro, UF y UTM (Chile)",
                     dollar_label: "Dólar observado",
+                    dollar_market_label: "Dólar (mercado, no oficial)",
                     indicator_label: "Moneda / Indicador",
                     to_clp: "a pesos (CLP)",
                     from_clp: "de pesos (CLP)",
@@ -476,6 +477,7 @@
                     convert_to_num_btn: "Convert to Number",
                     indicators_title: "Dollar, Euro, UF and UTM (Chile)",
                     dollar_label: "Observed dollar",
+                    dollar_market_label: "Dollar (market, unofficial)",
                     indicator_label: "Currency / Indicator",
                     to_clp: "to pesos (CLP)",
                     from_clp: "from pesos (CLP)",
@@ -913,6 +915,7 @@
             function renderIndicators() {
                 const t = translations[currentLang];
                 indEls.dir.textContent = ind.toClp ? t.to_clp : t.from_clp;
+                document.getElementById('indDolarLabel').textContent = ind.source === 'intl' ? t.dollar_market_label : t.dollar_label;
                 if (ind.status === 'loading') indEls.status.textContent = t.ind_loading;
                 else if (ind.status === 'error') indEls.status.textContent = t.ind_error;
                 else indEls.status.textContent = (ind.status === 'cached' ? t.ind_cached : (ind.source === 'intl' ? t.ind_updated_intl : t.ind_updated)) + ' ' + ind.dateStr;
@@ -964,7 +967,7 @@
                         else ind.status = 'error';
                     }
                 }
-                if (ind.status === 'ok') {
+                if (ind.status === 'ok' && ind.source === 'bcch') {
                     try { localStorage.setItem('indicadores', JSON.stringify({ data: ind.data, dateStr: ind.dateStr })); } catch (x) {}
                 }
                 renderIndicators();
