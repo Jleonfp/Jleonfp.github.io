@@ -143,8 +143,8 @@
              <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4 text-gray-400">
                 <img id="user-flag" src="" alt="Bandera del país" class="w-8 h-auto rounded-md hidden" onerror="this.style.display='none'"/>
                 <div class="text-sm text-left">
-                    <span id="current-date" data-translate-key="current_date">Cargando fecha...</span>
-                    <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono bg-gray-800/50 px-2 py-1 rounded" data-translate-key="current_time">Cargando hora...</span>
+                    <span id="current-date" >Cargando fecha...</span>
+                    <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono bg-gray-800/50 px-2 py-1 rounded" >Cargando hora...</span>
                 </div>
             </div>
             <div class="relative">
@@ -377,6 +377,9 @@
                     text_to_num_title: "Conversor de Texto a Número",
                     text_to_num_placeholder: "Ingresa un texto...",
                     convert_to_num_btn: "Convertir a Número",
+                    num_too_large: "Número demasiado grande (máx. 12 dígitos).",
+                    integers_only: "Ingresa solo números enteros (sin decimales).",
+                    invalid_input: "Entrada no válida",
                     vat_calculator_title: "Calculadora de IVA",
                     country_vat_label: "País (IVA %)",
                     custom_vat_label: "Ingresar % de IVA personalizado",
@@ -406,7 +409,7 @@
                     footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Longitud", masa: "Masa", temperatura: "Temperatura" },
                     vat_countries: {
-                        "0.19_cl": "Chile (19%)", "0.21_es": "España (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Perú (18%)", "custom": "Otro (ingresar manualmente)..."
+                        "0.19_cl": "Chile (19%)", "0.21_es": "España (21%)", "0.16_mx": "México (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.15_ec": "Ecuador (15%)", "0.18_pe": "Perú (18%)", "custom": "Otro (ingresar manualmente)..."
                     },
                     units: {
                         meters: 'Metros (m)', kilometers: 'Kilómetros (km)', centimeters: 'Centímetros (cm)', millimeters: 'Milímetros (mm)', miles: 'Millas (mi)', feet: 'Pies (ft)', inches: 'Pulgadas (in)',
@@ -430,6 +433,9 @@
                     text_to_num_title: "Text to Number Converter",
                     text_to_num_placeholder: "Enter text...",
                     convert_to_num_btn: "Convert to Number",
+                    num_too_large: "Number too large (max. 12 digits).",
+                    integers_only: "Please enter whole numbers only (no decimals).",
+                    invalid_input: "Invalid input",
                     vat_calculator_title: "VAT Calculator",
                     country_vat_label: "Country (VAT %)",
                     custom_vat_label: "Enter custom VAT %",
@@ -459,7 +465,7 @@
                     footer_text: "© 2025 Digital Toolkit Pro",
                     measurement_types: { longitud: "Length", masa: "Mass", temperatura: "Temperature" },
                      vat_countries: {
-                        "0.19_cl": "Chile (19%)", "0.21_es": "Spain (21%)", "0.16_mx": "Mexico (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.12_ec": "Ecuador (12%)", "0.18_pe": "Peru (18%)", "custom": "Other (enter manually)..."
+                        "0.19_cl": "Chile (19%)", "0.21_es": "Spain (21%)", "0.16_mx": "Mexico (16%)", "0.21_ar": "Argentina (21%)", "0.19_co": "Colombia (19%)", "0.15_ec": "Ecuador (15%)", "0.18_pe": "Peru (18%)", "custom": "Other (enter manually)..."
                     },
                     units: {
                         meters: 'Meters (m)', kilometers: 'Kilometers (km)', centimeters: 'Centimeters (cm)', millimeters: 'Millimeters (mm)', miles: 'Miles (mi)', feet: 'Feet (ft)', inches: 'Inches (in)',
@@ -512,7 +518,11 @@
                     unitCategorySelect.appendChild(option);
                 }
                 if (currentCategory) unitCategorySelect.value = currentCategory;
-                populateUnits(); 
+                const prevFrom = fromUnit.value, prevTo = toUnit.value;
+                populateUnits();
+                if (prevFrom && prevTo && unitData[unitCategorySelect.value][prevFrom] && unitData[unitCategorySelect.value][prevTo]) {
+                    fromUnit.value = prevFrom; toUnit.value = prevTo; convertUnits();
+                }
 
                 const countryVat = document.getElementById('countryVat');
                 const currentVat = countryVat.value;
@@ -520,11 +530,12 @@
                 const vatCountries = translations[lang].vat_countries;
                 for (const key in vatCountries) {
                     const option = document.createElement('option');
-                    option.value = key.split('_')[0];
+                    option.value = key;
                     option.textContent = vatCountries[key];
                     countryVat.appendChild(option);
                 }
                 if(currentVat) countryVat.value = currentVat;
+                customVatContainer.classList.toggle('hidden', countryVat.value !== 'custom');
             }
 
             const formatCurrency = (num, lang) => isNaN(num) ? '-' : num.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -568,83 +579,46 @@
             
             function toWordsES(num) {
                 if (num === 0) return 'cero';
+                if (num < 0) return 'menos ' + toWordsES(Math.abs(num));
                 if (String(num).length > 15) return "Número demasiado grande";
 
-                const _UNIDADES = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-                const _DECENAS = ['', 'diez', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-                const _ESPECIALES = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-                const _CENTENAS = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+                const UNI = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'];
+                const DEC = ['', '', '', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+                const CEN = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
 
-                function _convertLessThanOneThousand(n) {
+                // Convierte 1..999. "apocope" = true cambia "uno" final por "un"/"ún" (antes de mil/millones)
+                function menorMil(n, apocope) {
                     if (n === 100) return 'cien';
-                    let word = '';
-                    const c = Math.floor(n / 100);
-                    const r = n % 100;
-
-                    if (c > 0) {
-                        word += _CENTENAS[c];
-                        if (r > 0) word += ' ';
+                    const c = Math.floor(n / 100), r = n % 100;
+                    let w = c > 0 ? CEN[c] : '';
+                    let rw = '';
+                    if (r > 0 && r < 30) rw = UNI[r];
+                    else if (r >= 30) rw = DEC[Math.floor(r / 10)] + (r % 10 ? ' y ' + UNI[r % 10] : '');
+                    if (apocope) {
+                        if (rw === 'veintiuno') rw = 'veintiún';
+                        else rw = rw.replace(/(^| )uno$/, '$1un');
                     }
-
-                    if (r > 0) {
-                        if (r < 10) word += _UNIDADES[r];
-                        else if (r < 20) word += _ESPECIALES[r - 10];
-                        else {
-                            const d = Math.floor(r / 10);
-                            const u = r % 10;
-                            word += _DECENAS[d];
-                            if (u > 0) {
-                                word += ' y ' + _UNIDADES[u];
-                            }
-                        }
-                    }
-                    return word.trim();
+                    return (w + ' ' + rw).trim();
                 }
 
-                let numStr = String(num);
-                let chunks = [];
-                // Divide el número en chunks de 3 dígitos de derecha a izquierda
-                while (numStr.length > 0) {
-                    chunks.unshift(numStr.slice(Math.max(0, numStr.length - 3)));
-                    numStr = numStr.slice(0, Math.max(0, numStr.length - 3));
+                // Convierte 0..999.999 (miles)
+                function menorMillon(n, apocope) {
+                    const miles = Math.floor(n / 1000), resto = n % 1000;
+                    let parts = [];
+                    if (miles === 1) parts.push('mil');
+                    else if (miles > 1) parts.push(menorMil(miles, true) + ' mil');
+                    if (resto > 0) parts.push(menorMil(resto, apocope));
+                    return parts.join(' ');
                 }
 
+                // Español usa escala larga: millón = 10^6, billón = 10^12
+                const billones = Math.floor(num / 1e12);
+                const millones = Math.floor((num % 1e12) / 1e6);
+                const resto = num % 1e6;
                 let parts = [];
-                // Las escalas: unidades, miles, millones, mil millones, billones
-                const scales = ['', 'mil', 'millones', 'mil millones', 'billones']; 
-
-                // Itera sobre los chunks de izquierda a derecha (el chunk más significativo primero)
-                for (let i = 0; i < chunks.length; i++) {
-                    let chunkNum = parseInt(chunks[i], 10);
-                    if (chunkNum === 0) continue;
-
-                    // Determina la escala del chunk actual (mil, millones, etc.)
-                    // La escala se basa en la posición del chunk desde la derecha.
-                    // chunks.length - 1 (último índice) - i (índice actual)
-                    // Ej: 15.500 -> chunks=["15", "500"]
-                    // i=0 (chunk "15"): chunks.length - 1 - i = 2 - 1 - 0 = 1 -> scales[1] = 'mil'
-                    // i=1 (chunk "500"): chunks.length - 1 - i = 2 - 1 - 1 = 0 -> scales[0] = ''
-                    let scaleIndex = chunks.length - 1 - i;
-                    let scaleWord = scales[scaleIndex];
-                    let chunkText = '';
-
-                    if (scaleWord === 'millones' || scaleWord === 'mil millones' || scaleWord === 'billones') {
-                        // Manejo de singular/plural para millones/billones
-                        chunkText = chunkNum === 1 ? 'un ' + scaleWord.replace('es', '') : _convertLessThanOneThousand(chunkNum) + ' ' + scaleWord;
-                    } else if (scaleWord === 'mil') {
-                        // Manejo de 'mil' (un mil, dos mil, etc.)
-                        chunkText = chunkNum === 1 ? 'mil' : _convertLessThanOneThousand(chunkNum) + ' mil';
-                    } else {
-                        // Para las unidades (sin escala)
-                        chunkText = _convertLessThanOneThousand(chunkNum);
-                    }
-                    
-                    // Agrega el texto del chunk al principio del array `parts` para mantener el orden correcto
-                    parts.push(chunkText);
-                }
-                // Si el número original era 0, devuelve 'cero'.
-                if (num === 0) return 'cero';
-
+                if (billones > 0) parts.push(billones === 1 ? 'un billón' : menorMillon(billones, true) + ' billones');
+                if (millones > 0) parts.push(millones === 1 ? 'un millón' : menorMillon(millones, true) + ' millones');
+                if (resto > 0) parts.push(menorMillon(resto, false));
                 return parts.join(' ').replace(/\s+/g, ' ').trim();
             }
             
@@ -652,8 +626,12 @@
                 const value = numToTextInput.value;
                 if(value === '') return;
                 // Ajustado para permitir números más grandes si la función lo soporta, pero manteniendo el límite de 12 dígitos como referencia.
-                if (value.length > 12) {
-                    numToTextResult.textContent = translations[currentLang].num_too_large || "Número demasiado grande (máx. 12 dígitos).";
+                if (!/^-?\d+$/.test(value)) {
+                    numToTextResult.textContent = translations[currentLang].integers_only;
+                    return;
+                }
+                if (value.replace('-', '').length > 12) {
+                    numToTextResult.textContent = translations[currentLang].num_too_large;
                     return;
                 }
                 let text;
@@ -665,8 +643,26 @@
                 numToTextResult.textContent = casing === 'upper' ? text.toUpperCase() : text.toLowerCase();
             };
 
-            function textoANumero(texto) { const wordMap={'cero':0,'uno':1,'un':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciséis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintidós':22,'veintitrés':23,'veinticuatro':24,'veinticinco':25,'veintiséis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};const scaleMap={'mil':1e3,'millon':1e6,'millones':1e6,'billón':1e12,'billones':1e12};let tokens=texto.toLowerCase().replace(/ y /g,' ').replace(/,/g,'').split(/\s+/).filter(t=>t.length>0);let grandTotal=0;let sectionTotal=0;let tempVal=0;for(let i = 0; i < tokens.length; i++){if(tokens[i]==='mil'&&(tokens[i+1]==='millones'||tokens[i+1]==='millón')){tokens.splice(i,2,'mil-millones');scaleMap['mil-millones']=1e9;}}for(const token of tokens){if(scaleMap[token]!==undefined){tempVal=(tempVal===0)?1:tempVal;sectionTotal+=tempVal*scaleMap[token];tempVal=0;}else if(wordMap[token]!==undefined){tempVal+=wordMap[token];}else{grandTotal=-1;}}if(grandTotal===-1)return 'Entrada no válida';grandTotal=sectionTotal+tempVal;return grandTotal.toLocaleString(currentLang);}
-            function getVatRate() { /* Unchanged */ const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection); } }
+            function textoANumero(texto) {
+                const quitarTildes = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '');
+                const wordMap = {'cero':0,'uno':1,'un':1,'una':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,'trece':13,'catorce':14,'quince':15,'dieciseis':16,'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,'veintiuno':21,'veintiun':21,'veintidos':22,'veintitres':23,'veinticuatro':24,'veinticinco':25,'veintiseis':26,'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,'setecientos':700,'ochocientos':800,'novecientos':900};
+                const bigMap = {'millon':1e6,'millones':1e6,'billon':1e12,'billones':1e12};
+                const tokens = quitarTildes(texto.toLowerCase()).replace(/[,.]/g, ' ').split(/\s+/).filter(t => t && t !== 'y');
+                if (tokens.length === 0) return '';
+                let total = 0, grupo = 0, actual = 0;
+                // grupo acumula hasta 999.999 (incluye "mil"); millón/billón cierran el grupo
+                for (const t of tokens) {
+                    if (wordMap[t] !== undefined) actual += wordMap[t];
+                    else if (t === 'mil') { grupo += (actual === 0 ? 1 : actual) * 1000; actual = 0; }
+                    else if (bigMap[t] !== undefined) {
+                        let n = grupo + actual; if (n === 0) n = 1;
+                        total += n * bigMap[t]; grupo = 0; actual = 0;
+                    }
+                    else return translations[currentLang].invalid_input;
+                }
+                return (total + grupo + actual).toLocaleString(currentLang);
+            }
+            function getVatRate() { /* Unchanged */ const selection = countryVatSelect.value; if (selection === 'custom') { const customRate = parseFloat(customVatInput.value); return isNaN(customRate) ? 0 : customRate / 100; } else { return parseFloat(selection.split('_')[0]); } }
             
             function populateUnits() {
                 const category = unitCategory.value;
@@ -730,12 +726,13 @@
                     result = baseValue / toFactor;
                 }
                 
-                toValue.value = Number(result.toFixed(5)).toLocaleString(currentLang);
+                toValue.value = result.toLocaleString(currentLang, { maximumSignificantDigits: 8 });
             }
 
             // --- MODERN CALCULATOR LOGIC ---
             let currentInput = '0';
             let history = [];
+            let justEvaluated = false;
 
             function handleCalcInput(key) {
                 const lastChar = currentInput.slice(-1);
@@ -751,11 +748,15 @@
                             throw new Error("Invalid characters");
                         }
                         const rawResult = new Function('return ' + expression)();
+                        if (!isFinite(rawResult)) throw new Error("Division by zero");
                         const result = parseFloat(rawResult.toFixed(10));
                         history.push({ expression: currentInput, result: result.toLocaleString(currentLang), rawResult: result });
                         if (history.length > 10) history.shift();
                         updateHistory();
                         currentInput = String(result);
+                        justEvaluated = true;
+                        updateDisplay();
+                        return;
                     } catch (error) {
                         currentInput = 'Error';
                     }
@@ -764,21 +765,27 @@
                     if (key === '*') operator = '×';
                     if (key === '/') operator = '÷';
                     
-                    if (!['+', '-', '×', '÷'].includes(lastChar)) {
+                    if (currentInput === 'Error') currentInput = '0';
+                    if (['+', '-', '×', '÷'].includes(lastChar)) {
+                        currentInput = currentInput.slice(0, -1) + operator; // reemplaza el operador anterior
+                    } else {
                         currentInput += operator;
                     }
                 } else if (key === '%') {
-                    if (!isNaN(parseFloat(lastChar))){
-                         currentInput = String(parseFloat(currentInput) / 100);
+                    // Aplica % solo al último número (antes convertía toda la expresión)
+                    const m = currentInput.match(/(\d*\.?\d+)$/);
+                    if (m) {
+                        currentInput = currentInput.slice(0, -m[1].length) + String(parseFloat(m[1]) / 100);
                     }
                 } else if (!isNaN(key) || key === '.') {
                     if (key === '.' && currentInput.split(/[\+\-×÷]/).pop().includes('.')) return;
-                    if (currentInput === '0' || currentInput === 'Error') {
+                    if (currentInput === '0' || currentInput === 'Error' || justEvaluated) {
                         currentInput = key;
                     } else {
                         currentInput += key;
                     }
                 }
+                justEvaluated = false;
                 updateDisplay();
             }
 
@@ -789,7 +796,7 @@
             function updateHistory() {
                 calculatorHistory.innerHTML = '';
                 history.slice().reverse().forEach(item => {
-                    const li = document.createElement('li');
+                    const li = document.createElement('div');
                     li.className = 'p-1 rounded-md hover:bg-gray-700 cursor-pointer text-right text-sm';
                     li.innerHTML = `<span class="text-gray-400">${item.expression} =</span><br>${item.result}`;
                     li.addEventListener('click', () => {
@@ -801,15 +808,15 @@
             }
             
             // --- EVENT LISTENERS ---
-            languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
+            languageSelector.addEventListener('change', (e) => { setLanguage(e.target.value); updateClock(); });
             toUpperBtn.addEventListener('click', () => convertNumToText('upper'));
             toLowerBtn.addEventListener('click', () => convertNumToText('lower'));
             copyNumToTextBtn.addEventListener('click', () => {const textToCopy = numToTextResult.textContent;if (!textToCopy) return;const textArea = document.createElement('textarea');textArea.value = textToCopy;document.body.appendChild(textArea);textArea.select();try {document.execCommand('copy');const originalIcon = copyNumToTextBtn.innerHTML;copyNumToTextBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;setTimeout(() => {copyNumToTextBtn.innerHTML = originalIcon;}, 1500);} catch (err) {console.error('Error al copiar el texto: ', err);}document.body.removeChild(textArea);});
             textToNumBtn.addEventListener('click', () => { const text = textToNumInput.value; const result = textoANumero(text); textToNumResult.textContent = result; });
             countryVatSelect.addEventListener('change', () => { if (countryVatSelect.value === 'custom') { customVatContainer.classList.remove('hidden'); } else { customVatContainer.classList.add('hidden'); } });
-            calculateFromNetBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const net = amount;const vat = net * vatRate;const total = net + vat;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
-            calculateFromTotalBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate <= 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const total = amount;const net = total / (1 + vatRate);const vat = total - net;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
-            calculateDiscountBtn.addEventListener('click', () => {const originalPrice = parseFloat(originalPriceInput.value);const discountPercentage = parseFloat(discountPercentageInput.value);if (isNaN(originalPrice) || isNaN(discountPercentage) || originalPrice < 0 || discountPercentage < 0) {savedAmount.textContent = '-';finalPrice.textContent = '-';return;}const amountToSave = originalPrice * (discountPercentage / 100);const priceWithDiscount = originalPrice - amountToSave;savedAmount.textContent = '$ ' + formatCurrency(amountToSave, currentLang);finalPrice.textContent = '$ ' + formatCurrency(priceWithDiscount, currentLang);});
+            calculateFromNetBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate < 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const net = amount;const vat = net * vatRate;const total = net + vat;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
+            calculateFromTotalBtn.addEventListener('click', () => {const amount = parseFloat(amountInput.value);const vatRate = getVatRate();if (isNaN(amount) || vatRate < 0) {resultNet.textContent = resultVat.textContent = resultTotal.textContent = '-';return;}const total = amount;const net = total / (1 + vatRate);const vat = total - net;resultNet.textContent = formatCurrency(net, currentLang);resultVat.textContent = formatCurrency(vat, currentLang);resultTotal.textContent = formatCurrency(total, currentLang);});
+            calculateDiscountBtn.addEventListener('click', () => {const originalPrice = parseFloat(originalPriceInput.value);const discountPercentage = parseFloat(discountPercentageInput.value);if (isNaN(originalPrice) || isNaN(discountPercentage) || originalPrice < 0 || discountPercentage < 0 || discountPercentage > 100) {savedAmount.textContent = '-';finalPrice.textContent = '-';return;}const amountToSave = originalPrice * (discountPercentage / 100);const priceWithDiscount = originalPrice - amountToSave;savedAmount.textContent = '$ ' + formatCurrency(amountToSave, currentLang);finalPrice.textContent = '$ ' + formatCurrency(priceWithDiscount, currentLang);});
             unitCategory.addEventListener('change', populateUnits);
             fromValue.addEventListener('input', convertUnits);
             fromUnit.addEventListener('change', convertUnits);
