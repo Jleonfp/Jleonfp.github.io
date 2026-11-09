@@ -163,6 +163,37 @@
 
     <!-- Main Grid for Tools -->
     <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- Indicadores Chile: Dólar / Euro / UF / UTM -->
+        <div class="card lg:col-span-2 rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-semibold mb-1 text-cyan-300" data-translate-key="indicators_title"></h2>
+            <p id="indicatorsStatus" class="text-sm text-gray-400 mb-4"></p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
+                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="dollar_label"></span><span id="indDolar" class="font-mono text-xl text-cyan-300">-</span></div>
+                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">Euro</span><span id="indEuro" class="font-mono text-xl text-cyan-300">-</span></div>
+                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UF</span><span id="indUf" class="font-mono text-xl text-cyan-300">-</span></div>
+                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UTM</span><span id="indUtm" class="font-mono text-xl text-cyan-300">-</span></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div>
+                    <label for="indAmount" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label"></label>
+                    <input type="number" id="indAmount" class="input-field w-full p-3 rounded-lg" value="1">
+                </div>
+                <div>
+                    <label for="indCurrency" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="indicator_label"></label>
+                    <select id="indCurrency" class="input-field w-full p-3 rounded-lg">
+                        <option value="dolar">USD (Dólar)</option>
+                        <option value="euro">EUR (Euro)</option>
+                        <option value="uf">UF</option>
+                        <option value="utm">UTM</option>
+                    </select>
+                </div>
+                <div>
+                    <button id="indSwap" class="btn-secondary w-full text-white font-semibold py-3 px-4 rounded-lg">⇄ <span id="indDirection"></span></button>
+                </div>
+            </div>
+            <div id="indResult" class="result-box p-4 rounded-lg text-cyan-200 text-xl mt-4 text-center">-</div>
+        </div>
         
         <!-- Converters Column -->
         <div class="card rounded-2xl p-6 md:p-8 space-y-8">
@@ -377,6 +408,15 @@
                     text_to_num_title: "Conversor de Texto a Número",
                     text_to_num_placeholder: "Ingresa un texto...",
                     convert_to_num_btn: "Convertir a Número",
+                    indicators_title: "Dólar, Euro, UF y UTM (Chile)",
+                    dollar_label: "Dólar observado",
+                    indicator_label: "Moneda / Indicador",
+                    to_clp: "a pesos (CLP)",
+                    from_clp: "de pesos (CLP)",
+                    ind_loading: "Cargando valores...",
+                    ind_updated: "Valores del Banco Central de Chile, al",
+                    ind_cached: "Sin conexión al servicio. Mostrando últimos valores guardados, del",
+                    ind_error: "No se pudieron cargar los valores. Intenta más tarde.",
                     num_too_large: "Número demasiado grande (máx. 12 dígitos).",
                     integers_only: "Ingresa solo números enteros (sin decimales).",
                     invalid_input: "Entrada no válida",
@@ -433,6 +473,15 @@
                     text_to_num_title: "Text to Number Converter",
                     text_to_num_placeholder: "Enter text...",
                     convert_to_num_btn: "Convert to Number",
+                    indicators_title: "Dollar, Euro, UF and UTM (Chile)",
+                    dollar_label: "Observed dollar",
+                    indicator_label: "Currency / Indicator",
+                    to_clp: "to pesos (CLP)",
+                    from_clp: "from pesos (CLP)",
+                    ind_loading: "Loading values...",
+                    ind_updated: "Values from the Central Bank of Chile, as of",
+                    ind_cached: "Service unavailable. Showing last saved values, from",
+                    ind_error: "Could not load values. Please try again later.",
                     num_too_large: "Number too large (max. 12 digits).",
                     integers_only: "Please enter whole numbers only (no decimals).",
                     invalid_input: "Invalid input",
@@ -536,6 +585,7 @@
                 }
                 if(currentVat) countryVat.value = currentVat;
                 customVatContainer.classList.toggle('hidden', countryVat.value !== 'custom');
+                if (typeof renderIndicators === 'function') renderIndicators();
             }
 
             const formatCurrency = (num, lang) => isNaN(num) ? '-' : num.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -853,8 +903,58 @@
             });
 
 
+            // --- INDICADORES CHILE (mindicador.cl) ---
+            const ind = { data: null, dateStr: '', status: 'loading', toClp: true };
+            const indEls = { status: document.getElementById('indicatorsStatus'), dolar: document.getElementById('indDolar'), euro: document.getElementById('indEuro'), uf: document.getElementById('indUf'), utm: document.getElementById('indUtm'), amount: document.getElementById('indAmount'), cur: document.getElementById('indCurrency'), swap: document.getElementById('indSwap'), dir: document.getElementById('indDirection'), result: document.getElementById('indResult') };
+            const fmtClp = v => '$' + v.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            function renderIndicators() {
+                const t = translations[currentLang];
+                indEls.dir.textContent = ind.toClp ? t.to_clp : t.from_clp;
+                if (ind.status === 'loading') indEls.status.textContent = t.ind_loading;
+                else if (ind.status === 'error') indEls.status.textContent = t.ind_error;
+                else indEls.status.textContent = (ind.status === 'cached' ? t.ind_cached : t.ind_updated) + ' ' + ind.dateStr;
+                if (!ind.data) { indEls.result.textContent = '-'; return; }
+                for (const k of ['dolar', 'euro', 'uf', 'utm']) indEls[k].textContent = ind.data[k] ? fmtClp(ind.data[k]) : '-';
+                const amount = parseFloat(indEls.amount.value);
+                const rate = ind.data[indEls.cur.value];
+                if (isNaN(amount) || !rate) { indEls.result.textContent = '-'; return; }
+                const code = indEls.cur.value === 'dolar' ? 'USD' : indEls.cur.value === 'euro' ? 'EUR' : indEls.cur.value.toUpperCase();
+                const n = v => v.toLocaleString(currentLang, { maximumFractionDigits: 4 });
+                indEls.result.textContent = ind.toClp
+                    ? `${n(amount)} ${code} = ${fmtClp(amount * rate)} CLP`
+                    : `${fmtClp(amount)} CLP = ${n(amount / rate)} ${code}`;
+            }
+
+            async function loadIndicators() {
+                try {
+                    const r = await fetch('https://mindicador.cl/api');
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    const d = await r.json();
+                    if (!d.dolar || !d.dolar.valor) throw new Error('Respuesta sin datos');
+                    ind.data = { dolar: d.dolar.valor, euro: d.euro && d.euro.valor, uf: d.uf && d.uf.valor, utm: d.utm && d.utm.valor };
+                    ind.dateStr = new Date(d.dolar.fecha).toLocaleDateString('es-CL', { timeZone: 'UTC' });
+                    ind.status = 'ok';
+                    try { localStorage.setItem('indicadores', JSON.stringify({ data: ind.data, dateStr: ind.dateStr })); } catch (e) {}
+                } catch (err) {
+                    console.error('No se pudieron obtener los indicadores:', err);
+                    let cached = null;
+                    try { cached = JSON.parse(localStorage.getItem('indicadores')); } catch (e) {}
+                    if (cached && cached.data) { ind.data = cached.data; ind.dateStr = cached.dateStr; ind.status = 'cached'; }
+                    else ind.status = 'error';
+                }
+                renderIndicators();
+            }
+
+            indEls.amount.addEventListener('input', renderIndicators);
+            indEls.cur.addEventListener('change', renderIndicators);
+            indEls.swap.addEventListener('click', () => { ind.toClp = !ind.toClp; renderIndicators(); });
+            languageSelector.addEventListener('change', renderIndicators);
+
             // --- INITIALIZATION ---
             initializeApp();
+            renderIndicators();
+            loadIndicators();
 
         });
     </script>
