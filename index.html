@@ -415,6 +415,7 @@
                     from_clp: "de pesos (CLP)",
                     ind_loading: "Cargando valores...",
                     ind_updated: "Valores del Banco Central de Chile, al",
+                    ind_updated_intl: "Valores de mercado internacional (ExchangeRate-API), al",
                     ind_cached: "Sin conexión al servicio. Mostrando últimos valores guardados, del",
                     ind_error: "No se pudieron cargar los valores. Intenta más tarde.",
                     num_too_large: "Número demasiado grande (máx. 12 dígitos).",
@@ -480,6 +481,7 @@
                     from_clp: "from pesos (CLP)",
                     ind_loading: "Loading values...",
                     ind_updated: "Values from the Central Bank of Chile, as of",
+                    ind_updated_intl: "International market rates (ExchangeRate-API), as of",
                     ind_cached: "Service unavailable. Showing last saved values, from",
                     ind_error: "Could not load values. Please try again later.",
                     num_too_large: "Number too large (max. 12 digits).",
@@ -904,7 +906,7 @@
 
 
             // --- INDICADORES CHILE (mindicador.cl) ---
-            const ind = { data: null, dateStr: '', status: 'loading', toClp: true };
+            const ind = { data: null, dateStr: '', status: 'loading', source: '', toClp: true };
             const indEls = { status: document.getElementById('indicatorsStatus'), dolar: document.getElementById('indDolar'), euro: document.getElementById('indEuro'), uf: document.getElementById('indUf'), utm: document.getElementById('indUtm'), amount: document.getElementById('indAmount'), cur: document.getElementById('indCurrency'), swap: document.getElementById('indSwap'), dir: document.getElementById('indDirection'), result: document.getElementById('indResult') };
             const fmtClp = v => '$' + v.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -913,7 +915,7 @@
                 indEls.dir.textContent = ind.toClp ? t.to_clp : t.from_clp;
                 if (ind.status === 'loading') indEls.status.textContent = t.ind_loading;
                 else if (ind.status === 'error') indEls.status.textContent = t.ind_error;
-                else indEls.status.textContent = (ind.status === 'cached' ? t.ind_cached : t.ind_updated) + ' ' + ind.dateStr;
+                else indEls.status.textContent = (ind.status === 'cached' ? t.ind_cached : (ind.source === 'intl' ? t.ind_updated_intl : t.ind_updated)) + ' ' + ind.dateStr;
                 if (!ind.data) { indEls.result.textContent = '-'; return; }
                 for (const k of ['dolar', 'euro', 'uf', 'utm']) indEls[k].textContent = ind.data[k] ? fmtClp(ind.data[k]) : '-';
                 const amount = parseFloat(indEls.amount.value);
@@ -926,22 +928,44 @@
                     : `${fmtClp(amount)} CLP = ${n(amount / rate)} ${code}`;
             }
 
+            async function fetchJson(url) {
+                const r = await fetch(url);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            }
+
             async function loadIndicators() {
                 try {
-                    const r = await fetch('https://mindicador.cl/api');
-                    if (!r.ok) throw new Error('HTTP ' + r.status);
-                    const d = await r.json();
+                    // Fuente principal: mindicador.cl (Banco Central de Chile; incluye UF y UTM)
+                    const d = await fetchJson('https://mindicador.cl/api');
                     if (!d.dolar || !d.dolar.valor) throw new Error('Respuesta sin datos');
                     ind.data = { dolar: d.dolar.valor, euro: d.euro && d.euro.valor, uf: d.uf && d.uf.valor, utm: d.utm && d.utm.valor };
                     ind.dateStr = new Date(d.dolar.fecha).toLocaleDateString('es-CL', { timeZone: 'UTC' });
+                    ind.source = 'bcch';
                     ind.status = 'ok';
-                    try { localStorage.setItem('indicadores', JSON.stringify({ data: ind.data, dateStr: ind.dateStr })); } catch (e) {}
                 } catch (err) {
-                    console.error('No se pudieron obtener los indicadores:', err);
-                    let cached = null;
-                    try { cached = JSON.parse(localStorage.getItem('indicadores')); } catch (e) {}
-                    if (cached && cached.data) { ind.data = cached.data; ind.dateStr = cached.dateStr; ind.status = 'cached'; }
-                    else ind.status = 'error';
+                    console.warn('mindicador.cl no disponible, usando respaldo:', err);
+                    try {
+                        // Respaldo: open.er-api.com (solo dólar y euro; UF y UTM desde lo último guardado)
+                        const e = await fetchJson('https://open.er-api.com/v6/latest/USD');
+                        const clp = e.rates && e.rates.CLP, eur = e.rates && e.rates.EUR;
+                        if (!clp) throw new Error('Respuesta sin CLP');
+                        let prev = null;
+                        try { prev = JSON.parse(localStorage.getItem('indicadores')); } catch (x) {}
+                        ind.data = { dolar: clp, euro: eur ? clp / eur : null, uf: prev && prev.data ? prev.data.uf : null, utm: prev && prev.data ? prev.data.utm : null };
+                        ind.dateStr = new Date(e.time_last_update_unix * 1000).toLocaleDateString('es-CL');
+                        ind.source = 'intl';
+                        ind.status = 'ok';
+                    } catch (err2) {
+                        console.error('No se pudieron obtener los indicadores:', err2);
+                        let cached = null;
+                        try { cached = JSON.parse(localStorage.getItem('indicadores')); } catch (x) {}
+                        if (cached && cached.data) { ind.data = cached.data; ind.dateStr = cached.dateStr; ind.status = 'cached'; }
+                        else ind.status = 'error';
+                    }
+                }
+                if (ind.status === 'ok') {
+                    try { localStorage.setItem('indicadores', JSON.stringify({ data: ind.data, dateStr: ind.dateStr })); } catch (x) {}
                 }
                 renderIndicators();
             }
