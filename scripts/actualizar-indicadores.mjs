@@ -1,7 +1,7 @@
 // Obtiene Dólar observado, Euro, UF y UTM y los guarda en data/indicadores.json.
 // Fuente principal: API del Banco Central de Chile (requiere secretos BCCH_USER y BCCH_PASS).
 // Respaldo: mindicador.cl (sin registro).
-import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const OUT = 'data/indicadores.json';
 const SERIES = {
@@ -68,6 +68,7 @@ if (existsSync(OUT)) {
   const prev = JSON.parse(readFileSync(OUT, 'utf8'));
   for (const k of Object.keys(SERIES)) if (datos[k] == null && prev[k] != null) datos[k] = prev[k];
 }
+mkdirSync('data', { recursive: true });
 datos.actualizado = new Date().toISOString();
 writeFileSync(OUT, JSON.stringify(datos, null, 2) + '\n');
 console.log('Guardado', OUT, datos);
