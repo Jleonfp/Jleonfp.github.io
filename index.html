@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herramientas Web Online</title>
+    <title>Digital Toolkit Pro · Herramientas online</title>
+    <meta name="theme-color" content="#4f46e5">
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,126 +14,75 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom Styles for the futuristic look -->
+    <!-- Estilo: limpio y profesional (índigo sobre fondo claro) -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0e1a; /* Deep dark blue background */
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(5, 150, 255, 0.1), transparent 25%),
-                radial-gradient(circle at 85% 70%, rgba(100, 255, 218, 0.1), transparent 25%);
-            color: #e0e0e0;
+        :root {
+            --bg: #f5f6fb; --surface: #ffffff; --ink: #1e1b4b; --text: #334155; --muted: #64748b;
+            --line: #e5e7f0; --primary: #4f46e5; --primary-dark: #4338ca; --primary-soft: #eef2ff;
         }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+        h1, h2, h3 { color: var(--ink); letter-spacing: -0.01em; }
 
         .card {
-            background: rgba(17, 24, 39, 0.6); /* Semi-transparent dark card */
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
-            transition: all 0.3s ease;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            box-shadow: 0 1px 2px rgba(30, 27, 75, 0.04), 0 8px 24px rgba(30, 27, 75, 0.05);
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
+        .card:hover { box-shadow: 0 2px 4px rgba(30, 27, 75, 0.05), 0 14px 32px rgba(79, 70, 229, 0.10); transform: translateY(-2px); }
 
-        .card:hover {
-            border-color: rgba(0, 255, 255, 0.4);
-            transform: translateY(-5px);
-        }
+        .card-hero { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 60%, #818cf8 100%); border: none; color: #fff; }
+        .card-hero h2 { color: #fff !important; }
+        .card-hero .hero-sub { color: #e0e7ff; }
+        .card-hero .tile { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); }
+        .card-hero .tile-label { color: #e0e7ff; }
+        .card-hero .tile-value { color: #fff; }
+        .card-hero label { color: #e0e7ff !important; }
+        .card-hero .input-field { background: rgba(255,255,255,0.95); border-color: transparent; }
+        .card-hero .btn-secondary { background: rgba(255,255,255,0.18); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .card-hero .btn-secondary:hover { background: rgba(255,255,255,0.28); }
+        .card-hero .result-box { background: #fff; border: none; color: var(--ink) !important; font-weight: 600; }
 
         .input-field, .textarea-field {
-            background-color: #1f2937;
-            border: 1px solid #4b5563;
-            color: #e0e0e0;
-            transition: all 0.3s ease;
+            background-color: #fff; border: 1px solid #d6d9e6; color: var(--ink);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
+        .input-field:focus, .textarea-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+        .input-field::placeholder { color: #9aa3b8; }
 
-        .input-field:focus, .textarea-field:focus {
-            outline: none;
-            border-color: #00ffff;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-        }
+        .btn { background: var(--primary); color: #fff; transition: background 0.2s ease, transform 0.1s ease; box-shadow: 0 1px 2px rgba(79,70,229,0.25); }
+        .btn:hover { background: var(--primary-dark); }
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: var(--primary-soft); color: var(--primary-dark) !important; transition: background 0.2s ease, transform 0.1s ease; }
+        .btn-secondary:hover { background: #e0e7ff; }
+        .btn-secondary:active { transform: scale(0.98); }
+        .btn-secondary svg { stroke: var(--primary-dark); }
 
-        .btn {
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.2);
-        }
-        
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 198, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: #374151;
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background: #4b5563;
-            transform: scale(1.05);
-        }
-        
         .result-box {
-            background-color: #0c1222;
-            border: 1px dashed #4b5563;
-            min-height: 50px;
-            font-family: 'Courier New', Courier, monospace;
-            word-wrap: break-word;
+            background-color: #f8f9fd; border: 1px solid var(--line); min-height: 50px;
+            font-family: 'Inter', sans-serif; word-wrap: break-word; color: var(--ink) !important;
         }
-        
-        /* UPDATED: Modern Calculator Styles */
+        .stat { background: #f8f9fd; border: 1px solid var(--line); }
+        .stat-label { color: var(--muted); }
+        .stat-value { color: var(--ink); font-weight: 600; }
+        .stat-good { color: #059669; font-weight: 600; }
+        .field-label { color: var(--text); }
+        .section-title { color: var(--ink); }
+
         .calc-btn {
-            background: rgba(41, 56, 78, 0.7); /* Darker, glassy blue */
-            border: 1px solid rgba(0, 255, 255, 0.1);
-            font-size: 1.25rem;
-            padding: 1rem 0; /* Adjusted padding */
-            border-radius: 0.75rem; /* rounded-xl */
-            transition: all 0.2s ease-in-out;
-            color: #e0e0e0;
-            backdrop-filter: blur(5px);
+            background: #f4f5fa; border: 1px solid var(--line); font-size: 1.25rem; padding: 1rem 0;
+            border-radius: 0.75rem; transition: background 0.15s ease, transform 0.1s ease; color: var(--ink);
         }
-
-        .calc-btn:hover {
-            background: rgba(56, 77, 105, 0.9);
-            border-color: rgba(0, 255, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.08);
-        }
-
-        .calc-btn:active, .calc-btn.keyboard-active {
-            transform: translateY(0);
-            background: rgba(70, 95, 130, 0.9);
-        }
-
-        .calc-operator {
-            background: rgba(0, 108, 153, 0.6); /* Themed operator color */
-            color: #99f6e4; /* Aqua text */
-            font-weight: 500;
-        }
-
-        .calc-special {
-            background: rgba(75, 85, 99, 0.6); /* Dark gray for C and DEL */
-            color: #fca5a5; /* Light red text */
-        }
-
-        .calc-equals {
-            background: linear-gradient(120deg, #00c6ff, #0072ff); /* Themed equals button */
-            color: white;
-            font-weight: 600;
-        }
-
-        #calculator-display {
-            background: rgba(10, 14, 26, 0.8);
-            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
-        }
-
-        #calculator-history li {
-            transition: background-color 0.2s ease;
-        }
-
-        #calculator-history li:hover {
-            background-color: rgba(0, 255, 255, 0.05) !important;
-        }
-
+        .calc-btn:hover { background: #eceef6; }
+        .calc-btn:active, .calc-btn.keyboard-active { transform: scale(0.96); background: #e2e5f0; }
+        .calc-operator { background: var(--primary-soft); color: var(--primary-dark); font-weight: 600; }
+        .calc-operator:hover { background: #e0e7ff; }
+        .calc-special { background: #fff1f2; color: #e11d48; border-color: #ffe4e6; }
+        .calc-special:hover { background: #ffe4e6; }
+        .calc-equals { background: var(--primary); color: #fff; font-weight: 600; border-color: var(--primary); }
+        .calc-equals:hover { background: var(--primary-dark); }
+        #calculator-display { background: var(--ink); color: #fff; border-radius: 0.75rem; }
+        .history-item:hover { background-color: var(--primary-soft); }
     </style>
 </head>
 <body class="min-h-screen w-full p-4 sm:p-8 flex flex-col items-center">
@@ -140,11 +90,11 @@
     <!-- Header -->
     <header class="text-center mb-12 w-full max-w-6xl">
         <div class="flex justify-between items-start">
-             <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4 text-gray-400">
+             <div id="userInfo" class="flex items-center justify-center sm:justify-start gap-4 mb-4" style="color:var(--muted)">
                 <img id="user-flag" src="" alt="Bandera del país" class="w-8 h-auto rounded-md hidden" onerror="this.style.display='none'"/>
                 <div class="text-sm text-left">
                     <span id="current-date" >Cargando fecha...</span>
-                    <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono bg-gray-800/50 px-2 py-1 rounded" >Cargando hora...</span>
+                    <span id="current-time" class="block sm:inline-block sm:ml-2 font-mono px-2 py-1 rounded" style="background:var(--primary-soft);color:var(--primary-dark)" >Cargando hora...</span>
                 </div>
             </div>
             <div class="relative">
@@ -155,32 +105,32 @@
             </div>
         </div>
         
-        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500" data-translate-key="main_title">
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight" style="color:var(--ink)" data-translate-key="main_title">
             Digital Toolkit Pro
         </h1>
-        <p class="text-lg text-gray-400 mt-2" data-translate-key="subtitle">Herramientas online útiles</p>
+        <p class="text-lg mt-2" style="color:var(--muted)" data-translate-key="subtitle">Herramientas online útiles</p>
     </header>
 
     <!-- Main Grid for Tools -->
     <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
 
         <!-- Indicadores Chile: Dólar / Euro / UF / UTM -->
-        <div class="card lg:col-span-2 rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-1 text-cyan-300" data-translate-key="indicators_title"></h2>
-            <p id="indicatorsStatus" class="text-sm text-gray-400 mb-4"></p>
+        <div class="card card-hero lg:col-span-2 rounded-2xl p-6 md:p-8">
+            <h2 class="text-xl font-semibold mb-1" data-translate-key="indicators_title"></h2>
+            <p id="indicatorsStatus" class="hero-sub text-sm mb-4"></p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
-                <div class="bg-gray-700/50 p-3 rounded-lg"><span id="indDolarLabel" class="block text-xs text-gray-400" data-translate-key="dollar_label"></span><span id="indDolar" class="font-mono text-xl text-cyan-300">-</span></div>
-                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">Euro</span><span id="indEuro" class="font-mono text-xl text-cyan-300">-</span></div>
-                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UF</span><span id="indUf" class="font-mono text-xl text-cyan-300">-</span></div>
-                <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400">UTM</span><span id="indUtm" class="font-mono text-xl text-cyan-300">-</span></div>
+                <div class="tile p-3 rounded-xl"><span id="indDolarLabel" class="tile-label block text-xs" data-translate-key="dollar_label"></span><span id="indDolar" class="tile-value text-2xl font-semibold">-</span></div>
+                <div class="tile p-3 rounded-xl"><span class="tile-label block text-xs">Euro</span><span id="indEuro" class="tile-value text-2xl font-semibold">-</span></div>
+                <div class="tile p-3 rounded-xl"><span class="tile-label block text-xs">UF</span><span id="indUf" class="tile-value text-2xl font-semibold">-</span></div>
+                <div class="tile p-3 rounded-xl"><span class="tile-label block text-xs">UTM</span><span id="indUtm" class="tile-value text-2xl font-semibold">-</span></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
-                    <label for="indAmount" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label"></label>
+                    <label for="indAmount" class="field-label block mb-2 text-sm font-medium" data-translate-key="amount_label"></label>
                     <input type="number" id="indAmount" class="input-field w-full p-3 rounded-lg" value="1">
                 </div>
                 <div>
-                    <label for="indCurrency" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="indicator_label"></label>
+                    <label for="indCurrency" class="field-label block mb-2 text-sm font-medium" data-translate-key="indicator_label"></label>
                     <select id="indCurrency" class="input-field w-full p-3 rounded-lg">
                         <option value="dolar">USD (Dólar)</option>
                         <option value="euro">EUR (Euro)</option>
@@ -192,14 +142,14 @@
                     <button id="indSwap" class="btn-secondary w-full text-white font-semibold py-3 px-4 rounded-lg">⇄ <span id="indDirection"></span></button>
                 </div>
             </div>
-            <div id="indResult" class="result-box p-4 rounded-lg text-cyan-200 text-xl mt-4 text-center">-</div>
+            <div id="indResult" class="result-box p-4 rounded-lg text-xl mt-4 text-center">-</div>
         </div>
         
         <!-- Converters Column -->
         <div class="card rounded-2xl p-6 md:p-8 space-y-8">
             <!-- Number to Text Section -->
             <div>
-                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="num_to_text_title"></h2>
+                <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="num_to_text_title"></h2>
                 <div class="space-y-4">
                     <input type="number" id="numToTextInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="num_to_text_placeholder">
                     <div class="flex flex-col sm:flex-row gap-4">
@@ -207,7 +157,7 @@
                         <button id="toLowerBtn" class="btn-secondary w-full text-white font-semibold py-2 px-4 rounded-lg" data-translate-key="lowercase_btn"></button>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div id="numToTextResult" class="result-box p-4 rounded-lg text-cyan-200 w-full"></div>
+                        <div id="numToTextResult" class="result-box p-4 rounded-lg w-full"></div>
                         <button id="copyNumToTextBtn" class="btn-secondary p-3 rounded-lg flex-shrink-0" data-translate-key-title="copy_result_title">
                             <svg class="clipboard-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
@@ -217,41 +167,41 @@
 
             <!-- Text to Number Section -->
             <div>
-                <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="text_to_num_title"></h2>
+                <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="text_to_num_title"></h2>
                 <div class="space-y-4">
                     <input type="text" id="textToNumInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="text_to_num_placeholder">
                     <button id="textToNumBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="convert_to_num_btn"></button>
-                    <div id="textToNumResult" class="result-box p-4 rounded-lg text-cyan-200"></div>
+                    <div id="textToNumResult" class="result-box p-4 rounded-lg"></div>
                 </div>
             </div>
         </div>
 
         <!-- Calculators Column -->
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="vat_calculator_title"></h2>
+            <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="vat_calculator_title"></h2>
             <div class="space-y-6">
                 <div>
-                    <label for="countryVat" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="country_vat_label"></label>
+                    <label for="countryVat" class="field-label block mb-2 text-sm font-medium" data-translate-key="country_vat_label"></label>
                     <select id="countryVat" class="input-field w-full p-3 rounded-lg"></select>
                 </div>
                 <div id="customVatContainer" class="hidden">
-                    <label for="customVatInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="custom_vat_label"></label>
+                    <label for="customVatInput" class="field-label block mb-2 text-sm font-medium" data-translate-key="custom_vat_label"></label>
                     <input type="number" id="customVatInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="custom_vat_placeholder">
                 </div>
                 <div>
-                    <label for="amountInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="amount_label"></label>
+                    <label for="amountInput" class="field-label block mb-2 text-sm font-medium" data-translate-key="amount_label"></label>
                     <input type="number" id="amountInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="amount_placeholder">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <button id="calculateFromNet" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_net_btn"></button>
                     <button id="calculateFromTotal" class="btn text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calc_from_total_btn"></button>
                 </div>
-                <div class="space-y-4 pt-4 border-t border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title"></h3>
+                <div class="space-y-4 pt-4 border-t" style="border-color:var(--line)">
+                    <h3 class="text-base font-semibold section-title" data-translate-key="results_title"></h3>
                     <div class="grid grid-cols-3 gap-2 text-center text-sm">
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="net_label"></span><span id="resultNet" class="font-mono text-lg text-cyan-300">-</span></div>
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="vat_label"></span><span id="resultVat" class="font-mono text-lg text-cyan-300">-</span></div>
-                        <div class="bg-gray-700/50 p-2 rounded"><span class="block text-xs text-gray-400" data-translate-key="total_label"></span><span id="resultTotal" class="font-mono text-lg text-cyan-300">-</span></div>
+                        <div class="stat p-2 rounded-lg"><span class="stat-label block text-xs" data-translate-key="net_label"></span><span id="resultNet" class="stat-value text-lg">-</span></div>
+                        <div class="stat p-2 rounded-lg"><span class="stat-label block text-xs" data-translate-key="vat_label"></span><span id="resultVat" class="stat-value text-lg">-</span></div>
+                        <div class="stat p-2 rounded-lg"><span class="stat-label block text-xs" data-translate-key="total_label"></span><span id="resultTotal" class="stat-value text-lg">-</span></div>
                     </div>
                 </div>
             </div>
@@ -259,7 +209,7 @@
         
         <!-- Modern Calculator -->
         <div class="card lg:col-span-2 rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="modern_calculator_title"></h2>
+            <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="modern_calculator_title"></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-2">
                     <div id="calculator-display" class="text-right text-4xl p-4 rounded-t-lg font-mono break-all">0</div>
@@ -295,41 +245,41 @@
 
         <!-- Discount & Unit Converters -->
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="discount_calculator_title"></h2>
+            <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="discount_calculator_title"></h2>
             <div class="space-y-6">
                 <div>
-                    <label for="originalPriceInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="original_price_label"></label>
+                    <label for="originalPriceInput" class="field-label block mb-2 text-sm font-medium" data-translate-key="original_price_label"></label>
                     <input type="number" id="originalPriceInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="original_price_placeholder">
                 </div>
                 <div>
-                    <label for="discountPercentageInput" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="discount_percentage_label"></label>
+                    <label for="discountPercentageInput" class="field-label block mb-2 text-sm font-medium" data-translate-key="discount_percentage_label"></label>
                     <input type="number" id="discountPercentageInput" class="input-field w-full p-3 rounded-lg" data-translate-key-placeholder="discount_percentage_placeholder">
                 </div>
                 <button id="calculateDiscountBtn" class="btn w-full text-white font-bold py-3 px-4 rounded-lg" data-translate-key="calculate_discount_btn"></button>
-                <div class="space-y-4 pt-4 border-t border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-200" data-translate-key="results_title"></h3>
+                <div class="space-y-4 pt-4 border-t" style="border-color:var(--line)">
+                    <h3 class="text-base font-semibold section-title" data-translate-key="results_title"></h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center text-sm">
-                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="saved_amount_label"></span><span id="savedAmount" class="font-mono text-xl text-green-400">-</span></div>
-                        <div class="bg-gray-700/50 p-3 rounded-lg"><span class="block text-xs text-gray-400" data-translate-key="final_price_label"></span><span id="finalPrice" class="font-mono text-xl text-cyan-300">-</span></div>
+                        <div class="stat p-3 rounded-xl"><span class="stat-label block text-xs" data-translate-key="saved_amount_label"></span><span id="savedAmount" class="stat-good text-xl">-</span></div>
+                        <div class="stat p-3 rounded-xl"><span class="stat-label block text-xs" data-translate-key="final_price_label"></span><span id="finalPrice" class="stat-value text-xl">-</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="card rounded-2xl p-6 md:p-8">
-            <h2 class="text-2xl font-semibold mb-4 text-cyan-300" data-translate-key="unit_converter_title"></h2>
+            <h2 class="section-title text-xl font-semibold mb-4" data-translate-key="unit_converter_title"></h2>
             <div class="space-y-4">
                  <div>
-                    <label for="unitCategory" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="measurement_type_label"></label>
+                    <label for="unitCategory" class="field-label block mb-2 text-sm font-medium" data-translate-key="measurement_type_label"></label>
                     <select id="unitCategory" class="input-field w-full p-3 rounded-lg"></select>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-full">
-                        <label for="fromUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="from_label"></label>
+                        <label for="fromUnit" class="field-label block mb-2 text-sm font-medium" data-translate-key="from_label"></label>
                         <select id="fromUnit" class="input-field w-full p-3 rounded-lg"></select>
                     </div>
                     <div class="w-full">
-                         <label for="toUnit" class="block mb-2 text-sm font-medium text-gray-300" data-translate-key="to_label"></label>
+                         <label for="toUnit" class="field-label block mb-2 text-sm font-medium" data-translate-key="to_label"></label>
                         <select id="toUnit" class="input-field w-full p-3 rounded-lg"></select>
                     </div>
                 </div>
@@ -342,7 +292,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 text-center text-gray-500 text-sm">
+    <footer class="mt-12 text-center text-sm" style="color:var(--muted)">
         <p data-translate-key="footer_text">&copy; 2025 Digital Toolkit Pro</p>
     </footer>
 
@@ -851,8 +801,8 @@
                 calculatorHistory.innerHTML = '';
                 history.slice().reverse().forEach(item => {
                     const li = document.createElement('div');
-                    li.className = 'p-1 rounded-md hover:bg-gray-700 cursor-pointer text-right text-sm';
-                    li.innerHTML = `<span class="text-gray-400">${item.expression} =</span><br>${item.result}`;
+                    li.className = 'history-item p-1 rounded-md cursor-pointer text-right text-sm';
+                    li.innerHTML = `<span style="color:var(--muted)">${item.expression} =</span><br>${item.result}`;
                     li.addEventListener('click', () => {
                         currentInput = String(item.rawResult);
                         updateDisplay();
